@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { X } from 'lucide-react'
+import { X, Upload, Link as LinkIcon } from 'lucide-react'
 import type { Project, ProjectInsert } from '@/types/database'
 
 interface ProjectFormProps {
@@ -13,6 +13,8 @@ interface ProjectFormProps {
 export function ProjectForm({ project, onClose }: ProjectFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [imageMode, setImageMode] = useState<'url' | 'upload'>('url')
   const supabase = createClient()
 
   const [formData, setFormData] = useState({
@@ -25,6 +27,39 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
     featured: project?.featured || false,
     order_index: project?.order_index || 0,
   })
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    setError('')
+
+    try {
+      // Create a unique file name
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
+      const filePath = `project-images/${fileName}`
+
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('projects')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('projects')
+        .getPublicUrl(filePath)
+
+      setFormData({ ...formData, image_url: data.publicUrl })
+    } catch (error: any) {
+      setError(error.message || 'Failed to upload image')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -173,17 +208,75 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
           </div>
 
           <div>
-            <label htmlFor="image_url" className="block text-sm font-medium mb-2">
-              Image URL
+            <label className="block text-sm font-medium mb-2">
+              Project Image
             </label>
-            <input
-              type="url"
-              id="image_url"
-              value={formData.image_url}
-              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-              placeholder="https://example.com/image.png"
-            />
+            
+            {/* Toggle between URL and Upload */}
+            <div className="flex gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => setImageMode('url')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  imageMode === 'url'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <LinkIcon size={16} />
+                Image URL
+              </button>
+              <button
+                type="button"
+                onClick={() => setImageMode('upload')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  imageMode === 'upload'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <Upload size={16} />
+                Upload Image
+              </button>
+            </div>
+
+            {imageMode === 'url' ? (
+              <input
+                type="url"
+                id="image_url"
+                value={formData.image_url}
+                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                placeholder="https://example.com/image.png"
+              />
+            ) : (
+              <div>
+                <input
+                  type="file"
+                  id="image_upload"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={uploading}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                />
+                {uploading && (
+                  <p className="text-sm text-blue-600 mt-2">Uploading image...</p>
+                )}
+              </div>
+            )}
+            
+            {formData.image_url && (
+              <div className="mt-3">
+                <img
+                  src={formData.image_url}
+                  alt="Preview"
+                  className="w-full h-40 object-cover rounded-lg border border-gray-200"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Invalid+Image'
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           <div>

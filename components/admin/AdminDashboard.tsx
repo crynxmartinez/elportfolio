@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Plus, LogOut, Edit, Trash2, ExternalLink } from 'lucide-react'
+import { Plus, LogOut, Edit, Trash2, ExternalLink, Search } from 'lucide-react'
 import type { Project } from '@/types/database'
 import type { User } from '@supabase/supabase-js'
 import { ProjectForm } from './ProjectForm'
@@ -17,6 +17,8 @@ export function AdminDashboard({ projects: initialProjects, user }: AdminDashboa
   const [projects, setProjects] = useState(initialProjects)
   const [showForm, setShowForm] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'websites' | 'systems' | 'games'>('all')
   const router = useRouter()
   const supabase = createClient()
 
@@ -49,6 +51,14 @@ export function AdminDashboard({ projects: initialProjects, user }: AdminDashboa
     setEditingProject(null)
     router.refresh()
   }
+
+  // Filter projects based on search and category
+  const filteredProjects = projects.filter(project => {
+    const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         project.description.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesCategory = categoryFilter === 'all' || project.category === categoryFilter
+    return matchesSearch && matchesCategory
+  })
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
@@ -102,15 +112,74 @@ export function AdminDashboard({ projects: initialProjects, user }: AdminDashboa
           </div>
         </div>
 
-        {/* Add Project Button */}
-        <div className="mb-6">
-          <button
-            onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
-          >
-            <Plus size={20} />
-            Add New Project
-          </button>
+        {/* Search and Filter */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            {/* Search Bar */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="Search projects by title or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+              />
+            </div>
+            
+            {/* Add Project Button */}
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
+            >
+              <Plus size={20} />
+              Add Project
+            </button>
+          </div>
+
+          {/* Category Filter Tabs */}
+          <div className="flex gap-2 overflow-x-auto">
+            <button
+              onClick={() => setCategoryFilter('all')}
+              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
+                categoryFilter === 'all'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              All ({projects.length})
+            </button>
+            <button
+              onClick={() => setCategoryFilter('websites')}
+              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
+                categoryFilter === 'websites'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Websites ({projects.filter(p => p.category === 'websites').length})
+            </button>
+            <button
+              onClick={() => setCategoryFilter('systems')}
+              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
+                categoryFilter === 'systems'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Systems ({projects.filter(p => p.category === 'systems').length})
+            </button>
+            <button
+              onClick={() => setCategoryFilter('games')}
+              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
+                categoryFilter === 'games'
+                  ? 'bg-orange-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Games ({projects.filter(p => p.category === 'games').length})
+            </button>
+          </div>
         </div>
 
         {/* Projects Table */}
@@ -126,16 +195,20 @@ export function AdminDashboard({ projects: initialProjects, user }: AdminDashboa
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {projects.length === 0 ? (
+                {filteredProjects.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
-                      <div className="text-6xl mb-4">📦</div>
-                      <p className="text-lg font-medium">No projects yet</p>
-                      <p className="text-sm mt-1">Click "Add New Project" to get started</p>
+                      <div className="text-6xl mb-4">🔍</div>
+                      <p className="text-lg font-medium">No projects found</p>
+                      <p className="text-sm mt-1">
+                        {searchQuery || categoryFilter !== 'all' 
+                          ? 'Try adjusting your search or filter'
+                          : 'Click "Add Project" to get started'}
+                      </p>
                     </td>
                   </tr>
                 ) : (
-                  projects.map((project) => (
+                  filteredProjects.map((project) => (
                     <tr key={project.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
