@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Github, Mail, MessageSquare } from 'lucide-react'
 
