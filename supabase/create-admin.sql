@@ -1,40 +1,16 @@
--- Create admin user with username: eladmin and password: eladmin
--- Run this in Supabase SQL Editor
+-- Create admin user
+-- IMPORTANT: You MUST create the user through Supabase Dashboard UI
+-- Direct SQL insert into auth.users is not allowed for security reasons
 
--- Step 1: Create the auth user
--- Note: Supabase requires email format, so we use eladmin as the email prefix
-INSERT INTO auth.users (
-  instance_id,
-  id,
-  aud,
-  role,
-  email,
-  encrypted_password,
-  email_confirmed_at,
-  created_at,
-  updated_at,
-  raw_app_meta_data,
-  raw_user_meta_data,
-  is_super_admin,
-  confirmation_token
-)
-VALUES (
-  '00000000-0000-0000-0000-000000000000',
-  gen_random_uuid(),
-  'authenticated',
-  'authenticated',
-  'eladmin',
-  crypt('eladmin', gen_salt('bf')),
-  now(),
-  now(),
-  now(),
-  '{"provider":"email","providers":["email"]}',
-  '{}',
-  FALSE,
-  ''
-);
+-- Instructions:
+-- 1. Go to Supabase Dashboard > Authentication > Users
+-- 2. Click "Add User" or "Invite User"
+-- 3. Enter your credentials
+-- 4. Check "Auto Confirm User" 
+-- 5. Click Create
 
--- Step 2: Add to admin_users table (optional)
+-- After creating the user in Supabase Auth UI, optionally run this:
+-- (Replace 'your-email@example.com' with the email you used)
 INSERT INTO admin_users (email)
-VALUES ('eladmin')
+VALUES ('your-email@example.com')
 ON CONFLICT (email) DO NOTHING;
