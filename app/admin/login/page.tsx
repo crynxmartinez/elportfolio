@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Lock, Mail } from 'lucide-react'
+import { Lock, User } from 'lucide-react'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -20,7 +20,7 @@ export default function LoginPage() {
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: username,
         password,
       })
 
@@ -55,18 +55,18 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
-                Email
+              <label htmlFor="username" className="block text-sm font-medium mb-2">
+                Username
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-                  placeholder="admin@example.com"
+                  placeholder="eladmin"
                   required
                 />
               </div>
