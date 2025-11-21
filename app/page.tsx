@@ -11,7 +11,7 @@ export default async function Home() {
     .select('*')
     .eq('featured', true)
     .order('order_index', { ascending: true })
-    .limit(3)
+    .limit(9)
 
   return (
     <main className="pt-20">
