@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# El Martinez Portfolio V3
+
+A modern, dynamic portfolio website built with Next.js 14, Supabase, and TailwindCSS. Features a full admin panel for managing projects without touching code.
+
+## Features
+
+- 🎨 Modern, responsive design
+- 📱 Mobile-first approach
+- 🔐 Secure admin authentication
+- ✏️ Full CRUD operations for projects
+- 🗂️ Category filtering (Websites, Systems, Games)
+- ⭐ Featured projects section
+- 🚀 Built with Next.js 14 App Router
+- 💾 Supabase backend with PostgreSQL
+- 🎯 TypeScript for type safety
+
+## Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Styling:** TailwindCSS
+- **Database:** Supabase (PostgreSQL)
+- **Authentication:** Supabase Auth
+- **Deployment:** Vercel
+- **Language:** TypeScript
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Supabase Database
+
+Run the SQL scripts in the Supabase SQL Editor:
+
+1. First, run `supabase/schema.sql` to create tables
+2. (Optional) Run `supabase/seed.sql` to add sample projects
+
+### 3. Configure Environment Variables
+
+The `.env.local` file is already configured with your Supabase credentials:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+### 4. Create Admin User
+
+In Supabase Dashboard:
+1. Go to Authentication > Users
+2. Click "Add User"
+3. Create an account with email and password
+4. Use these credentials to log in at `/admin/login`
+
+### 5. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+├── app/
+│   ├── page.tsx              # Home page
+│   ├── projects/             # Projects listing
+│   ├── contact/              # Contact page
+│   └── admin/                # Admin panel
+│       ├── login/            # Admin login
+│       └── dashboard/        # Project management
+├── components/
+│   ├── Navigation.tsx        # Main navigation
+│   ├── ProjectCard.tsx       # Project card component
+│   ├── ProjectFilter.tsx     # Category filter
+│   └── admin/                # Admin components
+├── lib/
+│   └── supabase/             # Supabase client setup
+├── types/
+│   └── database.ts           # TypeScript types
+└── supabase/
+    ├── schema.sql            # Database schema
+    └── seed.sql              # Sample data
+```
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+### Admin Panel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Navigate to `/admin/login`
+2. Sign in with your Supabase credentials
+3. Add, edit, or delete projects
+4. Mark projects as "featured" to show on homepage
+5. Organize projects by category
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Adding Projects
 
-## Deploy on Vercel
+From the admin dashboard:
+1. Click "Add New Project"
+2. Fill in project details:
+   - Title
+   - Description
+   - Category (Websites/Systems/Games)
+   - Live URL
+   - Image URL (optional)
+   - Tech Stack (comma-separated)
+   - Featured checkbox
+   - Order Index (for sorting)
+3. Click "Create Project"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Deploy to Vercel
+
+1. Push code to GitHub
+2. Import repository in Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy!
+
+Vercel will automatically detect Next.js and configure everything.
+
+## Database Schema
+
+### Projects Table
+- `id` - UUID (Primary Key)
+- `title` - Text
+- `description` - Text
+- `category` - Enum (websites, systems, games)
+- `image_url` - Text (optional)
+- `live_url` - Text
+- `tech_stack` - Text Array
+- `featured` - Boolean
+- `order_index` - Integer
+- `created_at` - Timestamp
+- `updated_at` - Timestamp
+
+## License
+
+MIT
+
+## Author
+
+El Martinez - Professional Web Developer
