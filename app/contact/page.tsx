@@ -1,4 +1,5 @@
-import { Mail, MessageSquare, Github, Linkedin } from 'lucide-react'
+import { Mail, MessageSquare, Github } from 'lucide-react'
+import Image from 'next/image'
 
 export default function ContactPage() {
   return (
@@ -27,7 +28,7 @@ export default function ContactPage() {
               
               <div className="space-y-6">
                 <a
-                  href="mailto:contact@elportfolio.site"
+                  href="mailto:crynx.martinez@gmail.com"
                   className="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-100 hover:border-blue-200 hover:bg-blue-50 transition-all group"
                 >
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
@@ -35,7 +36,22 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <div className="font-semibold">Email</div>
-                    <div className="text-gray-600 text-sm">contact@elportfolio.site</div>
+                    <div className="text-gray-600 text-sm">crynx.martinez@gmail.com</div>
+                  </div>
+                </a>
+
+                <a
+                  href="https://wa.me/639152168012"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-100 hover:border-green-200 hover:bg-green-50 transition-all group"
+                >
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                    <MessageSquare className="text-green-600" size={24} />
+                  </div>
+                  <div>
+                    <div className="font-semibold">WhatsApp</div>
+                    <div className="text-gray-600 text-sm">+63 915 216 8012</div>
                   </div>
                 </a>
 
@@ -53,16 +69,6 @@ export default function ContactPage() {
                     <div className="text-gray-600 text-sm">@crynxmartinez</div>
                   </div>
                 </a>
-
-                <div className="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-100">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <MessageSquare className="text-green-600" size={24} />
-                  </div>
-                  <div>
-                    <div className="font-semibold">Available For</div>
-                    <div className="text-gray-600 text-sm">Freelance Projects & Collaborations</div>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -131,7 +137,15 @@ export default function ContactPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:contact@elportfolio.site"
+              href="https://wa.me/639152168012"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all shadow-lg hover:shadow-xl"
+            >
+              WhatsApp Me
+            </a>
+            <a
+              href="mailto:crynx.martinez@gmail.com"
               className="px-8 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
             >
               Email Me
