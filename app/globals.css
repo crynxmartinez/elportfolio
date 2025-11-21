@@ -16,6 +16,9 @@ body {
   color: var(--foreground);
 }
 
-html {
-  scroll-behavior: smooth;
+/* Smooth scroll only for same-page anchors, not for navigation */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(:target) {
+    scroll-behavior: smooth;
+  }
 }
