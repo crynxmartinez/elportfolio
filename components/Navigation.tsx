@@ -44,7 +44,6 @@ export function Navigation() {
             <Link
               href="/admin"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              onClick={() => window.scrollTo(0, 0)}
             >
               Admin
             </Link>
@@ -80,10 +79,7 @@ export function Navigation() {
             <Link
               href="/admin"
               className="block py-2 font-medium text-blue-600"
-              onClick={() => {
-                setIsOpen(false)
-                window.scrollTo(0, 0)
-              }}
+              onClick={() => setIsOpen(false)}
             >
               Admin
             </Link>

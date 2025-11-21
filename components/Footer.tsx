@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { Github, Mail, MessageSquare } from 'lucide-react'
 
@@ -73,7 +71,6 @@ export function Footer() {
                 <Link 
                   href="/admin" 
                   className="hover:text-blue-400 transition-colors"
-                  onClick={() => window.scrollTo(0, 0)}
                 >
                   Admin
                 </Link>
