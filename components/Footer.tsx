@@ -68,7 +68,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/admin" className="hover:text-blue-400 transition-colors">
+                <Link 
+                  href="/admin" 
+                  className="hover:text-blue-400 transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
                   Admin
                 </Link>
               </li>
