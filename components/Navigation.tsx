@@ -17,6 +17,7 @@ export function Navigation() {
   const links = [
     { href: '/', label: 'Home' },
     { href: '/projects', label: 'Projects' },
+    { href: '/free-stuff', label: 'Free Stuff' },
     { href: '/contact', label: 'Contact' },
   ]
 
