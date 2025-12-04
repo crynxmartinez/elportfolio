@@ -26,13 +26,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (mounted) {
       localStorage.setItem('admin-theme', theme)
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
     }
   }, [theme, mounted])
+
+  // Clean up dark class when leaving admin pages
+  useEffect(() => {
+    return () => {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [])
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
@@ -44,7 +46,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
+      <div className={theme === 'dark' ? 'dark' : ''}>
+        {children}
+      </div>
     </ThemeContext.Provider>
   )
 }
