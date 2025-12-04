@@ -20,10 +20,10 @@ export function ServicesSection() {
             >
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-blue-500 text-2xl">✦</span>
-                <h3 className="text-2xl font-bold">Done-For-You Web Apps</h3>
+                <h3 className="text-2xl font-bold">Done-For-You Web Apps (DFY)</h3>
               </div>
               <p className="text-gray-600 text-lg">
-                I design, build, and launch your custom web app end-to-end so your business can automate operations and add more revenue—without you touching the tech.
+                I handle everything—turning your idea into a fully built product and launching it—so you get a custom web app that automates your operations and helps you add more revenue, without ever touching the tech.
               </p>
             </button>
 
@@ -31,10 +31,10 @@ export function ServicesSection() {
             <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all">
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-blue-500 text-2xl">✦</span>
-                <h3 className="text-2xl font-bold">Done-With-You Systems</h3>
+                <h3 className="text-2xl font-bold">Done-With-You Web Apps (DWY)</h3>
               </div>
               <p className="text-gray-600 text-lg">
-                We co-build your web app together: strategy sessions, architecture planning, and implementation support so your team learns the system while we set it up.
+                We co-build your web app together: I lead the strategy, structure, and key tech decisions while you or your team handle parts of the implementation, so you learn the system and keep control in-house.
               </p>
             </div>
 
