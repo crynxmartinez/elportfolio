@@ -23,7 +23,7 @@ export function ServicesSection() {
                 <h3 className="text-2xl font-bold">Done-For-You Web Apps (DFY)</h3>
               </div>
               <p className="text-gray-600 text-lg">
-                I handle everything—turning your idea into a fully built product and launching it—so you get a custom web app that automates your operations and helps you add more revenue, without ever touching the tech.
+                I handle everything—turning your idea into a fully built product and launching it—so you get a custom web app that gives you more revenue, without ever touching the tech.
               </p>
             </button>
 
