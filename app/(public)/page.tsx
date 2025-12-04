@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Code2, Rocket, Zap } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function Home() {
@@ -43,36 +43,36 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Skills Section */}
+      {/* Services Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">What I Do as a Local Full Stack Developer</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Services</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <Code2 className="text-blue-600" size={24} />
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-blue-500 text-2xl">✦</span>
+                <h3 className="text-2xl font-bold">Done-For-You Services</h3>
               </div>
-              <h3 className="text-xl font-bold mb-3">Full Stack Web Development</h3>
-              <p className="text-gray-600">
-                As your local full stack dev, I build modern, responsive websites and web applications using the latest technologies.
+              <p className="text-gray-600 text-lg">
+                You literally do the work for them.
               </p>
             </div>
             <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                <Rocket className="text-purple-600" size={24} />
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-blue-500 text-2xl">✦</span>
+                <h3 className="text-2xl font-bold">Done-With-You</h3>
               </div>
-              <h3 className="text-xl font-bold mb-3">System Development</h3>
-              <p className="text-gray-600">
-                Creating custom booking systems, CRMs, and automation solutions tailored to your business needs.
+              <p className="text-gray-600 text-lg">
+                Coaching, Consulting & Doing Some of the Work as a Service.
               </p>
             </div>
             <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-green-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Zap className="text-green-600" size={24} />
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-blue-500 text-2xl">✦</span>
+                <h3 className="text-2xl font-bold">Do It Yourself</h3>
               </div>
-              <h3 className="text-xl font-bold mb-3">GHL Integration</h3>
-              <p className="text-gray-600">
-                Expert in GoHighLevel customization, automation, and integration with external services.
+              <p className="text-gray-600 text-lg">
+                Courses, PDFs, Books, Digital Products, etc.
               </p>
             </div>
           </div>
