@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { FolderKanban, MessageSquare, LogOut, Moon, Sun } from 'lucide-react'
 import { useTheme } from './ThemeProvider'
 
@@ -25,11 +26,13 @@ export function Sidebar({ activeTab, onTabChange, onLogout, userEmail }: Sidebar
       {/* Logo/Brand */}
       <div className="p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-3">
-          <img 
-            src="https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png" 
-            alt="EL Portfolio"
-            className="w-12 h-12 rounded-lg object-cover"
-          />
+          <Link href="/" title="Go to Home">
+            <img 
+              src="https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png" 
+              alt="EL Portfolio"
+              className="w-12 h-12 rounded-lg object-cover hover:opacity-80 transition-opacity cursor-pointer"
+            />
+          </Link>
           <div>
             <h1 className="font-bold text-gray-900 dark:text-white">Admin Panel</h1>
             <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[140px]">{userEmail}</p>
