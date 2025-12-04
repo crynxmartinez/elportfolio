@@ -42,10 +42,10 @@ export function ServicesSection() {
             <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-green-200 hover:shadow-lg transition-all">
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-blue-500 text-2xl">✦</span>
-                <h3 className="text-2xl font-bold">Do-It-Yourself Resources</h3>
+                <h3 className="text-2xl font-bold">DIY (Free Stuff)</h3>
               </div>
               <p className="text-gray-600 text-lg">
-                Courses, templates, and step-by-step web app blueprints so you can plan and brief your own dev team, even if you're not technical.
+                Blogs, breakdowns, and practical guides on web apps, automation, and systems so you can make smarter tech decisions for your business.
               </p>
             </div>
           </div>
