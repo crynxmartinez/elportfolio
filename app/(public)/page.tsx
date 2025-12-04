@@ -22,14 +22,9 @@ export default async function Home() {
           <div className="inline-block mb-4 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
             👋 Your Local Full Stack Developer
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            El Martinez
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 max-w-4xl mx-auto leading-tight">
+            I help small and startup businesses turn their web app ideas into reality and add at least <span className="text-green-600">₱300k</span> in revenue within <span className="text-blue-600">6 months</span>.
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Local full stack dev specializing in <span className="text-blue-600 font-semibold">GoHighLevel</span>, 
-            <span className="text-purple-600 font-semibold"> Next.js</span>, and 
-            <span className="text-green-600 font-semibold"> Custom Web Applications</span>
-          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href="/projects"
