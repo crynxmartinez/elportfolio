@@ -54,7 +54,7 @@ export default async function Home() {
                 <h3 className="text-2xl font-bold">Done-For-You Services</h3>
               </div>
               <p className="text-gray-600 text-lg">
-                You literally do the work for them.
+                I literally do the work for you.
               </p>
             </div>
             <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all">
