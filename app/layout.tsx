@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   keywords: ["local full stack developer", "local full stack dev", "full stack developer", "web developer", "GoHighLevel developer", "Next.js developer", "web solutions", "custom web apps"],
   authors: [{ name: "El Martinez" }],
   creator: "El Martinez",
+  icons: {
+    icon: "https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png",
+    apple: "https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png",
+  },
   robots: {
     index: true,
     follow: true,
