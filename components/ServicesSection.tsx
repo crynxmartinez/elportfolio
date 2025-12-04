@@ -34,7 +34,7 @@ export function ServicesSection() {
                 <h3 className="text-2xl font-bold">Done-With-You Web Apps (DWY)</h3>
               </div>
               <p className="text-gray-600 text-lg">
-                We co-build your web app together: I lead the strategy, structure, and key tech decisions while you or your team handle parts of the implementation, so you learn the system and keep control in-house.
+                We co-build your web app together: I lead and manage the process of creating your app while you or your team handle parts of the implementation. Me as your Project Manager.
               </p>
             </div>
 
