@@ -25,9 +25,11 @@ export function Sidebar({ activeTab, onTabChange, onLogout, userEmail }: Sidebar
       {/* Logo/Brand */}
       <div className="p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-            EM
-          </div>
+          <img 
+            src="https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png" 
+            alt="EL Portfolio"
+            className="w-12 h-12 rounded-lg object-cover"
+          />
           <div>
             <h1 className="font-bold text-gray-900 dark:text-white">Admin Panel</h1>
             <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[140px]">{userEmail}</p>

@@ -28,9 +28,9 @@ export function Navigation() {
             <img 
               src="https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png" 
               alt="EL Portfolio"
-              className="w-10 h-10 rounded-lg object-cover"
+              className="w-12 h-12 rounded-lg object-cover"
             />
-            <span className="hidden sm:inline">El Martinez</span>
+            <span className="hidden sm:inline">El</span>
           </Link>
 
           {/* Desktop Navigation */}
