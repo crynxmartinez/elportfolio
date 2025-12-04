@@ -9,6 +9,11 @@ export function Navigation() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
 
+  // Hide navigation on admin pages
+  if (pathname?.startsWith('/admin')) {
+    return null
+  }
+
   const links = [
     { href: '/', label: 'Home' },
     { href: '/projects', label: 'Projects' },
@@ -20,9 +25,11 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link href="/" className="flex items-center gap-3 font-bold text-xl">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-              EM
-            </div>
+            <img 
+              src="https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png" 
+              alt="EL Portfolio"
+              className="w-10 h-10 rounded-lg object-cover"
+            />
             <span className="hidden sm:inline">El Martinez</span>
           </Link>
 
