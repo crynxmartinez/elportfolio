@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { ServicesSection } from '@/components/ServicesSection'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -44,40 +45,7 @@ export default async function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Services</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-blue-500 text-2xl">✦</span>
-                <h3 className="text-2xl font-bold">Done-For-You Services</h3>
-              </div>
-              <p className="text-gray-600 text-lg">
-                I literally do the work for you.
-              </p>
-            </div>
-            <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-blue-500 text-2xl">✦</span>
-                <h3 className="text-2xl font-bold">Done-With-You</h3>
-              </div>
-              <p className="text-gray-600 text-lg">
-                Coaching, Consulting & Doing Some of the Work as a Service.
-              </p>
-            </div>
-            <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-green-200 hover:shadow-lg transition-all">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-blue-500 text-2xl">✦</span>
-                <h3 className="text-2xl font-bold">Do It Yourself</h3>
-              </div>
-              <p className="text-gray-600 text-lg">
-                Courses, PDFs, Books, Digital Products, etc.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ServicesSection />
 
       {/* Featured Projects */}
       {featuredProjects && featuredProjects.length > 0 && (
