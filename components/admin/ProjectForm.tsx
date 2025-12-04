@@ -107,15 +107,15 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full my-8">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full my-8">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold">
+        <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             {project ? 'Edit Project' : 'Add New Project'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-400"
           >
             <X size={24} />
           </button>
@@ -124,13 +124,13 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="title" className="block text-sm font-medium mb-2">
+            <label htmlFor="title" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
               Project Title *
             </label>
             <input
@@ -138,14 +138,14 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 outline-none transition-all"
               placeholder="My Awesome Project"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium mb-2">
+            <label htmlFor="description" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
               Description *
             </label>
             <textarea
@@ -153,7 +153,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={4}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 outline-none transition-all resize-none"
               placeholder="Describe your project..."
               required
             />
@@ -161,14 +161,14 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
 
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="category" className="block text-sm font-medium mb-2">
+              <label htmlFor="category" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
                 Category *
               </label>
               <select
                 id="category"
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value as 'websites' | 'systems' | 'games' })}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 outline-none transition-all"
                 required
               >
                 <option value="websites">Websites</option>
@@ -178,7 +178,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
             </div>
 
             <div>
-              <label htmlFor="order_index" className="block text-sm font-medium mb-2">
+              <label htmlFor="order_index" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
                 Order Index
               </label>
               <input
@@ -186,14 +186,14 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
                 id="order_index"
                 value={formData.order_index}
                 onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 outline-none transition-all"
                 placeholder="0"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="live_url" className="block text-sm font-medium mb-2">
+            <label htmlFor="live_url" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
               Live URL *
             </label>
             <input
@@ -201,14 +201,14 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
               id="live_url"
               value={formData.live_url}
               onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 outline-none transition-all"
               placeholder="https://example.com"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
               Project Image
             </label>
             
@@ -220,7 +220,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                   imageMode === 'url'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 <LinkIcon size={16} />
@@ -232,7 +232,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                   imageMode === 'upload'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 <Upload size={16} />
@@ -246,7 +246,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
                 id="image_url"
                 value={formData.image_url}
                 onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 outline-none transition-all"
                 placeholder="https://example.com/image.png"
               />
             ) : (
@@ -257,7 +257,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
                   accept="image/*"
                   onChange={handleImageUpload}
                   disabled={uploading}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 dark:file:bg-blue-900/30 file:text-blue-700 dark:file:text-blue-400 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/50 disabled:opacity-50"
                 />
                 {uploading && (
                   <p className="text-sm text-blue-600 mt-2">Uploading image...</p>
@@ -270,7 +270,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
                 <img
                   src={formData.image_url}
                   alt="Preview"
-                  className="w-full h-40 object-cover rounded-lg border border-gray-200"
+                  className="w-full h-40 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
                   onError={(e) => {
                     e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Invalid+Image'
                   }}
@@ -280,7 +280,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
           </div>
 
           <div>
-            <label htmlFor="tech_stack" className="block text-sm font-medium mb-2">
+            <label htmlFor="tech_stack" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
               Tech Stack (comma separated)
             </label>
             <input
@@ -288,7 +288,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
               id="tech_stack"
               value={formData.tech_stack}
               onChange={(e) => setFormData({ ...formData, tech_stack: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 outline-none transition-all"
               placeholder="React, Next.js, TypeScript"
             />
           </div>
@@ -301,17 +301,17 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
               onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
               className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-200"
             />
-            <label htmlFor="featured" className="text-sm font-medium">
+            <label htmlFor="featured" className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Featured Project (show on homepage)
             </label>
           </div>
 
           {/* Actions */}
-          <div className="flex gap-4 pt-4 border-t border-gray-200">
+          <div className="flex gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all"
+              className="flex-1 px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
             >
               Cancel
             </button>
