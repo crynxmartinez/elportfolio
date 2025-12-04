@@ -26,6 +26,8 @@ export default function LoginPage() {
 
       if (error) throw error
 
+      // Set flag for success toast on dashboard
+      sessionStorage.setItem('loginSuccess', 'true')
       router.push('/admin/dashboard')
       router.refresh()
     } catch (error: any) {

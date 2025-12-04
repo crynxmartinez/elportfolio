@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { Project } from '@/types/database'
@@ -9,6 +9,7 @@ import { ThemeProvider } from './ThemeProvider'
 import { Sidebar } from './Sidebar'
 import { ProjectsTab } from './ProjectsTab'
 import { MessagesTab } from './MessagesTab'
+import { ToastProvider, useToast } from './Toast'
 
 type Tab = 'projects' | 'messages'
 
@@ -17,26 +18,32 @@ interface AdminDashboardProps {
   user: User
 }
 
-export function AdminDashboard({ projects: initialProjects, user }: AdminDashboardProps) {
+// Inner component to use toast hook
+function DashboardContent({ 
+  projects: initialProjects, 
+  user,
+  onLogout 
+}: AdminDashboardProps & { onLogout: () => void }) {
   const [projects, setProjects] = useState(initialProjects)
   const [activeTab, setActiveTab] = useState<Tab>('projects')
-  const router = useRouter()
-  const supabase = createClient()
+  const { showToast } = useToast()
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/admin/login')
-    router.refresh()
-  }
+  // Check for login success toast
+  useEffect(() => {
+    const loginSuccess = sessionStorage.getItem('loginSuccess')
+    if (loginSuccess) {
+      sessionStorage.removeItem('loginSuccess')
+      showToast('Welcome back! Login successful', 'success')
+    }
+  }, [showToast])
 
   return (
-    <ThemeProvider>
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
         {/* Sidebar */}
         <Sidebar
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          onLogout={handleLogout}
+          onLogout={onLogout}
           userEmail={user.email || ''}
         />
 
@@ -63,6 +70,28 @@ export function AdminDashboard({ projects: initialProjects, user }: AdminDashboa
           {activeTab === 'messages' && <MessagesTab />}
         </main>
       </div>
+  )
+}
+
+export function AdminDashboard({ projects: initialProjects, user }: AdminDashboardProps) {
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push('/admin/login')
+    router.refresh()
+  }
+
+  return (
+    <ThemeProvider>
+      <ToastProvider>
+        <DashboardContent
+          projects={initialProjects}
+          user={user}
+          onLogout={handleLogout}
+        />
+      </ToastProvider>
     </ThemeProvider>
   )
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { X, Upload, Link as LinkIcon } from 'lucide-react'
 import type { Project, ProjectInsert } from '@/types/database'
+import { useToast } from './Toast'
 
 interface ProjectFormProps {
   project?: Project | null
@@ -16,6 +17,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
   const [uploading, setUploading] = useState(false)
   const [imageMode, setImageMode] = useState<'url' | 'upload'>('url')
   const supabase = createClient()
+  const { showToast } = useToast()
 
   const [formData, setFormData] = useState({
     title: project?.title || '',
@@ -97,6 +99,7 @@ export function ProjectForm({ project, onClose }: ProjectFormProps) {
         if (error) throw error
       }
 
+      showToast(project ? 'Project updated successfully' : 'Project created successfully', 'success')
       onClose()
     } catch (error: any) {
       setError(error.message || 'Failed to save project')

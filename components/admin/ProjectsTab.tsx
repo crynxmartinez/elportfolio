@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Plus, Edit, Trash2, ExternalLink, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Project } from '@/types/database'
 import { ProjectForm } from './ProjectForm'
+import { useToast } from './Toast'
 
 interface ProjectsTabProps {
   projects: Project[]
@@ -20,6 +21,7 @@ export function ProjectsTab({ projects, onProjectsChange }: ProjectsTabProps) {
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'websites' | 'systems' | 'games'>('all')
   const [currentPage, setCurrentPage] = useState(1)
   const supabase = createClient()
+  const { showToast } = useToast()
 
   // Filter projects
   const filteredProjects = projects.filter(project => {
@@ -55,6 +57,9 @@ export function ProjectsTab({ projects, onProjectsChange }: ProjectsTabProps) {
 
     if (!error) {
       onProjectsChange(projects.filter(p => p.id !== id))
+      showToast('Project deleted successfully', 'success')
+    } else {
+      showToast('Failed to delete project', 'error')
     }
   }
 
