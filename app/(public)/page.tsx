@@ -20,15 +20,15 @@ export default async function Home() {
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center relative z-10">
           <div className="inline-block mb-4 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
-            👋 Welcome to my portfolio
+            👋 Your Local Full Stack Developer
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             El Martinez
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Professional Web Developer specializing in <span className="text-blue-600 font-semibold">GoHighLevel</span>, 
+            Local full stack dev specializing in <span className="text-blue-600 font-semibold">GoHighLevel</span>, 
             <span className="text-purple-600 font-semibold"> Next.js</span>, and 
-            <span className="text-green-600 font-semibold"> Full-Stack Solutions</span>
+            <span className="text-green-600 font-semibold"> Custom Web Applications</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
@@ -51,15 +51,15 @@ export default async function Home() {
       {/* Skills Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">What I Do</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">What I Do as a Local Full Stack Developer</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <Code2 className="text-blue-600" size={24} />
               </div>
-              <h3 className="text-xl font-bold mb-3">Web Development</h3>
+              <h3 className="text-xl font-bold mb-3">Full Stack Web Development</h3>
               <p className="text-gray-600">
-                Building modern, responsive websites and web applications using the latest technologies and best practices.
+                As your local full stack dev, I build modern, responsive websites and web applications using the latest technologies.
               </p>
             </div>
             <div className="p-8 rounded-xl border-2 border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all">
@@ -143,10 +143,10 @@ export default async function Home() {
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to bring your ideas to life?
+            Ready to work with a local full stack developer?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Let's work together to create something amazing
+            Let's bring your ideas to life with modern full stack solutions
           </p>
           <Link
             href="/contact"

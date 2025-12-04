@@ -46,10 +46,19 @@ export function AdminDashboard({ projects: initialProjects, user }: AdminDashboa
     setShowForm(true)
   }
 
-  const handleFormClose = () => {
+  const handleFormClose = async () => {
     setShowForm(false)
     setEditingProject(null)
-    router.refresh()
+    
+    // Refetch projects to get updated data
+    const { data: updatedProjects } = await supabase
+      .from('projects')
+      .select('*')
+      .order('order_index', { ascending: true })
+    
+    if (updatedProjects) {
+      setProjects(updatedProjects)
+    }
   }
 
   // Filter projects based on search and category
