@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   authors: [{ name: "El Martinez" }],
   creator: "El Martinez",
   icons: {
-    icon: "https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png",
-    apple: "https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png",
+    icon: "https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png?v=2",
+    apple: "https://storage.googleapis.com/msgsndr/xzA6eU8kOYmBuwFdr3CF/media/6930ef1ae0f0927bf677b2a8.png?v=2",
   },
   robots: {
     index: true,
