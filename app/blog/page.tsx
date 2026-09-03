@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { POSTS } from "@/lib/data";
+import { getAllPosts } from "@/lib/posts";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -9,13 +9,14 @@ export const metadata = pageMetadata({
 });
 
 export default function Blog() {
+  const posts = getAllPosts();
   return (
     <div className="mx-auto max-w-3xl px-6 pt-40 pb-24">
       <p className="font-mono text-xs uppercase tracking-[0.3em] text-teal-300/80">Blog</p>
       <h1 className="font-display mt-4 text-4xl sm:text-5xl">Notes on the craft.</h1>
 
       <div className="mt-16 grid gap-6 sm:grid-cols-2">
-        {POSTS.map((post) => (
+        {posts.map((post) => (
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}

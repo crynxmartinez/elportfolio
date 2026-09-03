@@ -1,8 +1,12 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
+import { getAllPosts } from "@/lib/posts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/portfolio", "/blog", "/blog/premium-website", "/contact"];
+  const staticRoutes = ["", "/portfolio", "/blog", "/contact"];
+  const postRoutes = getAllPosts().map((p) => `/blog/${p.slug}`);
+  const routes = [...staticRoutes, ...postRoutes];
+
   return routes.map((path) => ({
     url: `${SITE_URL}${path}`,
     lastModified: new Date(),

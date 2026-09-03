@@ -97,21 +97,3 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-export type Post = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  readTime: string;
-};
-
-export const POSTS: Post[] = [
-  {
-    slug: "premium-website",
-    title: "What Makes a Premium Website Actually Work (Not Just Look Expensive)",
-    excerpt:
-      "A research-backed case study: the trust and speed data behind premium design, and a real scroll-driven build walked through decision by decision.",
-    date: "2026-09-03",
-    readTime: "15 min read",
-  },
-];
