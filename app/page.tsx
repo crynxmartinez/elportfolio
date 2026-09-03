@@ -47,11 +47,22 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.body.style.overflow = ready ? "" : "hidden";
+    if (ready) {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    } else {
+      // Compensate for the scrollbar that disappears once overflow locks -
+      // otherwise the whole page (canvas included) snaps sideways by its
+      // width right as the loader clears and scrolling unlocks.
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
     // Safety net: never trap a visitor behind the loader on a slow connection.
     const fallback = window.setTimeout(reveal, 8000);
     return () => {
       document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
       window.clearTimeout(fallback);
     };
   }, [ready]);
