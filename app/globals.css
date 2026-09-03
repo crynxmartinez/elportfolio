@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #05080a;
+  --foreground: #eef4f4;
 }
 
 @theme inline {
@@ -12,15 +12,68 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: rgba(45, 212, 191, 0.35);
+}
+
+.bg-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+/* Journey copy: every block overlays the same spot, only one visible at a
+   time via opacity - flex layout would otherwise stack and push them apart. */
+.journey-copy-start,
+[data-beat] {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.5rem 5rem;
+  will-change: opacity, transform;
+}
+.journey-copy-start {
+  justify-content: flex-end;
+  align-items: flex-start;
+  /* Correct rest state, so it's right even before JS has run a single frame. */
+  opacity: 1;
+}
+[data-beat] {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* Hidden by default - only JS should ever make one of these visible.
+     Without this, every beat renders at full opacity, stacked on top of
+     each other, until the scroll handler has fired at least once. */
+  opacity: 0;
+  pointer-events: none;
+}
+@media (min-width: 640px) {
+  .journey-copy-start,
+  [data-beat] {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* Beat text sits directly over a busy, detailed background frame with no
+   scrim in the middle of the viewport - a dark glass card behind the copy
+   keeps it legible regardless of what's playing behind it. */
+.beat-card {
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(5, 8, 10, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 1.5rem 1.75rem;
+}
+@media (min-width: 640px) {
+  .beat-card {
+    padding: 2rem 2.5rem;
+  }
 }
