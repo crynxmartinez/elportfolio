@@ -26,7 +26,10 @@ type Props = {
   ladderStep?: number; // coarse-pass spacing; larger for longer sequences
   onProgress?: (fraction: number) => void; // 0..1 through the poster+ladder pass
   onReady?: () => void; // poster + ladder loaded - safe to reveal, backfill continues after
+  snapPoints?: number[]; // 0..1 resting points; one wheel/swipe/key advances to the next
 };
+
+const STEP_LOCK_MS = 900; // fallback unlock if the browser never fires scrollend
 
 export default function SceneSequence({
   dir: DIR,
@@ -39,6 +42,7 @@ export default function SceneSequence({
   ladderStep = 10,
   onProgress,
   onReady,
+  snapPoints,
 }: Props) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -210,6 +214,103 @@ export default function SceneSequence({
       }
     }
 
+    /* Stepped mode: one wheel/swipe/key advances smoothly to the next
+       snapPoints entry instead of free-scrubbing pixel by pixel, so the
+       whole journey takes a handful of gestures instead of a long scroll. */
+    let stepIndex = 0;
+    let stepLocked = false;
+    let stepUnlockTimer = 0;
+
+    function nearestStepIndex(p: number) {
+      let best = 0;
+      let bestDist = Infinity;
+      snapPoints!.forEach((sp, i) => {
+        const d = Math.abs(sp - p);
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      });
+      return best;
+    }
+
+    function stepTargetY(i: number) {
+      const travel = stage!.offsetHeight - window.innerHeight;
+      const stageTop = stage!.getBoundingClientRect().top + window.scrollY;
+      return stageTop + snapPoints![i] * Math.max(travel, 0);
+    }
+
+    function unlockStep() {
+      stepLocked = false;
+      window.clearTimeout(stepUnlockTimer);
+      window.removeEventListener("scrollend", unlockStep);
+    }
+
+    function goToStep(next: number) {
+      next = clamp(next, 0, snapPoints!.length - 1);
+      if (next === stepIndex || stepLocked) return;
+      stepIndex = next;
+      stepLocked = true;
+      window.scrollTo({ top: stepTargetY(stepIndex), behavior: "smooth" });
+      if ("onscrollend" in window) {
+        window.addEventListener("scrollend", unlockStep, { once: true });
+      }
+      stepUnlockTimer = window.setTimeout(unlockStep, STEP_LOCK_MS);
+    }
+
+    const EPS = 0.002;
+
+    function onWheel(e: WheelEvent) {
+      const p = progress();
+      if (p <= EPS && e.deltaY < 0) return; // nothing above - let it be
+      if (p >= 1 - EPS && e.deltaY > 0) return; // release into the footer
+      e.preventDefault();
+      if (stepLocked) return;
+      goToStep(stepIndex + (e.deltaY > 0 ? 1 : -1));
+    }
+
+    let touchStartY = 0;
+    let touchArmed = false;
+
+    function onTouchStart(e: TouchEvent) {
+      touchStartY = e.touches[0].clientY;
+      touchArmed = true;
+    }
+
+    function onTouchMove(e: TouchEvent) {
+      if (!touchArmed) return;
+      const y = e.touches[0].clientY;
+      const delta = touchStartY - y; // positive = finger moving up = advance
+      const p = progress();
+      if (p <= EPS && delta < 0) return;
+      if (p >= 1 - EPS && delta > 0) return;
+      e.preventDefault();
+      if (stepLocked) return;
+      const THRESHOLD = 32;
+      if (Math.abs(delta) > THRESHOLD) {
+        touchArmed = false;
+        goToStep(stepIndex + (delta > 0 ? 1 : -1));
+      }
+    }
+
+    function onTouchEnd() {
+      touchArmed = false;
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      const target = e.target as HTMLElement | null;
+      if (target && /^(input|textarea|select|button|a)$/i.test(target.tagName)) return;
+      const forward = e.key === "ArrowDown" || e.key === "PageDown" || e.key === " ";
+      const backward = e.key === "ArrowUp" || e.key === "PageUp";
+      if (!forward && !backward) return;
+      const p = progress();
+      if (forward && p >= 1 - EPS) return;
+      if (backward && p <= EPS) return;
+      e.preventDefault();
+      if (stepLocked) return;
+      goToStep(stepIndex + (forward ? 1 : -1));
+    }
+
     function ladderIndices() {
       const out: number[] = [];
       for (let i = 0; i < count; i += ladderStep) out.push(i);
@@ -322,6 +423,16 @@ export default function SceneSequence({
       window.addEventListener("scroll", onScroll, { passive: true });
       onScroll();
 
+      const stepped = !!snapPoints && snapPoints.length > 1;
+      if (stepped) {
+        stepIndex = nearestStepIndex(progress());
+        window.addEventListener("wheel", onWheel, { passive: false });
+        window.addEventListener("touchstart", onTouchStart, { passive: true });
+        window.addEventListener("touchmove", onTouchMove, { passive: false });
+        window.addEventListener("touchend", onTouchEnd, { passive: true });
+        window.addEventListener("keydown", onKeyDown);
+      }
+
       // Eager for the first screen or two; gated further down the page.
       const rect = stage!.getBoundingClientRect();
       if (rect.top < window.innerHeight * 2.5 || !("IntersectionObserver" in window)) {
@@ -341,6 +452,15 @@ export default function SceneSequence({
 
       return () => {
         window.removeEventListener("scroll", onScroll);
+        if (stepped) {
+          window.removeEventListener("wheel", onWheel);
+          window.removeEventListener("touchstart", onTouchStart);
+          window.removeEventListener("touchmove", onTouchMove);
+          window.removeEventListener("touchend", onTouchEnd);
+          window.removeEventListener("keydown", onKeyDown);
+          window.removeEventListener("scrollend", unlockStep);
+          window.clearTimeout(stepUnlockTimer);
+        }
         cancelAnimationFrame(raf);
       };
     }

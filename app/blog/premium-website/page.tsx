@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const HOME_URL = "https://www.raphaelmartinez.dev";
+
 export const metadata: Metadata = {
   title: "What Makes a Premium Website Actually Work — A Case Study — Raphael Martinez",
   description:
@@ -30,9 +32,9 @@ function Ext({ href, children }: { href: string; children: React.ReactNode }) {
 }
 function Home({ children }: { children: React.ReactNode }) {
   return (
-    <Link href="/" className="text-teal-300 hover:underline">
+    <a href={HOME_URL} className="text-teal-300 hover:underline">
       {children}
-    </Link>
+    </a>
   );
 }
 

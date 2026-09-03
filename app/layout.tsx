@@ -13,6 +13,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.raphaelmartinez.dev"),
   title: "Raphael Martinez — Premium Website Design",
   description:
     "Premium website design for luxury brands, builders, and developers — plus GHL system builds for agencies. Cinematic, scroll-driven, built to match the quality of the work behind it.",

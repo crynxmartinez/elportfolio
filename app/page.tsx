@@ -19,6 +19,11 @@ import LoadingScreen from "@/components/LoadingScreen";
  * frame ladder are in (covers the full scroll range at a coarse spacing),
  * so the first scroll a visitor makes is already smooth. Full-resolution
  * backfill keeps loading underneath, invisibly, after the reveal.
+ *
+ * Stepped, not free-scrubbed: one scroll/swipe/key auto-plays to the next
+ * beat and locks briefly, rather than requiring a long manual scroll
+ * through the whole 2,160-frame range. SNAP_POINTS are each beat's resting
+ * point (its from/to window's midpoint, where its own fade is fully open).
  */
 
 const BEATS = [
@@ -27,6 +32,8 @@ const BEATS = [
   { from: 0.58, to: 0.72, kind: "answer", label: "02", title: "Pacing you control.", body: "Not autoplay. You just proved that yourself, scrolling this." },
   { from: 0.78, to: 0.9, kind: "answer", label: "03", title: "Craft as evidence.", body: "This page is the sample. Everything else is the pitch." },
 ];
+
+const SNAP_POINTS = [0, 0.21, 0.45, 0.65, 0.84, 1];
 
 export default function Home() {
   const [ready, setReady] = useState(false);
@@ -55,9 +62,10 @@ export default function Home() {
       <SceneSequence
         dir="/journey-seq"
         counts={{ desktop: 2160, mobile: 1080 }}
-        heightVh={2600}
+        heightVh={600}
         ladderStep={24}
         staticAt={0.45}
+        snapPoints={SNAP_POINTS}
         onProgress={setProgress}
         onReady={reveal}
       >
