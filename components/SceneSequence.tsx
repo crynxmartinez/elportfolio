@@ -29,7 +29,8 @@ type Props = {
   snapPoints?: number[]; // 0..1 resting points; one wheel/swipe/key advances to the next
 };
 
-const STEP_LOCK_MS = 900; // fallback unlock if the browser never fires scrollend
+const STEP_DURATION_MS = 1200; // hand-tweened scroll duration between beats
+const STEP_LOCK_MS = STEP_DURATION_MS + 400; // safety-net unlock if the rAF tween stalls
 
 export default function SceneSequence({
   dir: DIR,
@@ -216,10 +217,14 @@ export default function SceneSequence({
 
     /* Stepped mode: one wheel/swipe/key advances smoothly to the next
        snapPoints entry instead of free-scrubbing pixel by pixel, so the
-       whole journey takes a handful of gestures instead of a long scroll. */
+       whole journey takes a handful of gestures instead of a long scroll.
+       Hand-tweened rather than native scrollTo(behavior:"smooth") - the
+       browser's own smooth-scroll duration is short and not adjustable,
+       which read as an abrupt jump instead of an "auto-play" glide. */
     let stepIndex = 0;
     let stepLocked = false;
     let stepUnlockTimer = 0;
+    let stepAnimRaf = 0;
 
     function nearestStepIndex(p: number) {
       let best = 0;
@@ -240,10 +245,13 @@ export default function SceneSequence({
       return stageTop + snapPoints![i] * Math.max(travel, 0);
     }
 
+    function easeInOutCubic(t: number) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
     function unlockStep() {
       stepLocked = false;
       window.clearTimeout(stepUnlockTimer);
-      window.removeEventListener("scrollend", unlockStep);
     }
 
     function goToStep(next: number) {
@@ -251,10 +259,22 @@ export default function SceneSequence({
       if (next === stepIndex || stepLocked) return;
       stepIndex = next;
       stepLocked = true;
-      window.scrollTo({ top: stepTargetY(stepIndex), behavior: "smooth" });
-      if ("onscrollend" in window) {
-        window.addEventListener("scrollend", unlockStep, { once: true });
-      }
+      cancelAnimationFrame(stepAnimRaf);
+      const startY = window.scrollY;
+      const targetY = stepTargetY(stepIndex);
+      const delta = targetY - startY;
+      const startTime = performance.now();
+      const frame = (now: number) => {
+        const t = clamp((now - startTime) / STEP_DURATION_MS, 0, 1);
+        window.scrollTo(0, startY + delta * easeInOutCubic(t));
+        if (t < 1) {
+          stepAnimRaf = requestAnimationFrame(frame);
+        } else {
+          unlockStep();
+        }
+      };
+      stepAnimRaf = requestAnimationFrame(frame);
+      // Safety net in case rAF stalls (e.g. tab backgrounded mid-transition).
       stepUnlockTimer = window.setTimeout(unlockStep, STEP_LOCK_MS);
     }
 
@@ -458,8 +478,8 @@ export default function SceneSequence({
           window.removeEventListener("touchmove", onTouchMove);
           window.removeEventListener("touchend", onTouchEnd);
           window.removeEventListener("keydown", onKeyDown);
-          window.removeEventListener("scrollend", unlockStep);
           window.clearTimeout(stepUnlockTimer);
+          cancelAnimationFrame(stepAnimRaf);
         }
         cancelAnimationFrame(raf);
       };
