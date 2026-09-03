@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import SceneSequence from "@/components/SceneSequence";
+import LoadingScreen from "@/components/LoadingScreen";
 
 /**
  * The homepage is the journey - nothing else. One continuous 2,160-frame
@@ -10,6 +14,11 @@ import SceneSequence from "@/components/SceneSequence";
  * answer as short beats spaced through the middle, then the closing CTA.
  * Restrained on purpose - four short beats across the whole scroll, not
  * one per chunk.
+ *
+ * The page stays gated behind a loading screen until the poster + coarse
+ * frame ladder are in (covers the full scroll range at a coarse spacing),
+ * so the first scroll a visitor makes is already smooth. Full-resolution
+ * backfill keeps loading underneath, invisibly, after the reveal.
  */
 
 const BEATS = [
@@ -20,16 +29,41 @@ const BEATS = [
 ];
 
 export default function Home() {
+  const [ready, setReady] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const revealed = useRef(false);
+
+  const reveal = () => {
+    if (revealed.current) return;
+    revealed.current = true;
+    setReady(true);
+  };
+
+  useEffect(() => {
+    document.body.style.overflow = ready ? "" : "hidden";
+    // Safety net: never trap a visitor behind the loader on a slow connection.
+    const fallback = window.setTimeout(reveal, 8000);
+    return () => {
+      document.body.style.overflow = "";
+      window.clearTimeout(fallback);
+    };
+  }, [ready]);
+
   return (
-    <SceneSequence
-      dir="/journey-seq"
-      counts={{ desktop: 2160, mobile: 1080 }}
-      heightVh={2600}
-      ladderStep={24}
-      staticAt={0.45}
-    >
-      <JourneyCopy />
-    </SceneSequence>
+    <>
+      <LoadingScreen ready={ready} progress={progress} />
+      <SceneSequence
+        dir="/journey-seq"
+        counts={{ desktop: 2160, mobile: 1080 }}
+        heightVh={2600}
+        ladderStep={24}
+        staticAt={0.45}
+        onProgress={setProgress}
+        onReady={reveal}
+      >
+        <JourneyCopy />
+      </SceneSequence>
+    </>
   );
 }
 

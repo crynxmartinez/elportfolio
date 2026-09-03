@@ -24,6 +24,8 @@ type Props = {
   scrimTop?: boolean;
   scrimBottom?: boolean;
   ladderStep?: number; // coarse-pass spacing; larger for longer sequences
+  onProgress?: (fraction: number) => void; // 0..1 through the poster+ladder pass
+  onReady?: () => void; // poster + ladder loaded - safe to reveal, backfill continues after
 };
 
 export default function SceneSequence({
@@ -35,6 +37,8 @@ export default function SceneSequence({
   scrimTop = true,
   scrimBottom = true,
   ladderStep = 10,
+  onProgress,
+  onReady,
 }: Props) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -266,6 +270,8 @@ export default function SceneSequence({
       loadInto(idx).then(() => {
         resize();
         draw(idx, true);
+        onProgress?.(1);
+        onReady?.();
       });
       if (copyRef.current) {
         copyRef.current.style.opacity = "1";
@@ -280,7 +286,17 @@ export default function SceneSequence({
       const ladder = ladderIndices();
       void (async () => {
         await loadPoster();
-        await Promise.all(ladder.map((i) => loadInto(i).then(() => draw(current, true))));
+        let loaded = 0;
+        await Promise.all(
+          ladder.map((i) =>
+            loadInto(i).then(() => {
+              loaded++;
+              onProgress?.(loaded / ladder.length);
+              draw(current, true);
+            })
+          )
+        );
+        onReady?.();
         await backfill();
       })();
     }
