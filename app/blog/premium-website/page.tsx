@@ -1,12 +1,55 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMetadata, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/seo";
+import FAQ, { faqJsonLd, type FAQItem } from "@/components/FAQ";
 
 const HOME_URL = "https://www.raphaelmartinez.dev";
+const TITLE = "What Makes a Premium Website Actually Work — A Case Study — Raphael Martinez";
+const DESCRIPTION =
+  "A research-backed case study on what actually separates a premium website from a template with better photos — the trust research, the speed data, and a real build walked through frame by frame.";
+const PUBLISHED = "2026-09-03";
 
-export const metadata: Metadata = {
-  title: "What Makes a Premium Website Actually Work — A Case Study — Raphael Martinez",
-  description:
-    "A research-backed case study on what actually separates a premium website from a template with better photos — the trust research, the speed data, and a real build walked through frame by frame.",
+export const metadata = pageMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/blog/premium-website",
+  type: "article",
+  publishedTime: PUBLISHED,
+});
+
+const FAQS: FAQItem[] = [
+  {
+    q: "How much does a premium website actually cost?",
+    a: "It scales more with scope — source material, animation complexity, page count — than with any fixed formula. A scroll-driven build like the MAREA case study above costs more in engineering time (compression, preloading) than in visual design time. Worth asking about directly for your specific project rather than guessing from a template price.",
+  },
+  {
+    q: "How long does it take to build one?",
+    a: 'Mostly depends on whether real source material — photography, video, or a frame sequence — already exists. If it does, most of the build time goes into performance and pacing, not the visual design itself. See "what actually goes into building one of these" above.',
+  },
+  {
+    q: "Do I need real photography, or can I use stock images?",
+    a: "Real photography, even imperfect, reads as more credible than polished stock — that's covered above under what separates premium from expensive-looking. If usable photography doesn't exist yet, sourcing it honestly is part of the project, not an afterthought.",
+  },
+  {
+    q: "Will a premium website actually improve my SEO or conversions?",
+    a: "Indirectly, yes. The Google/Deloitte data above ties page speed directly to conversion, and page speed is also a real ranking factor. But the more direct effect is trust: per the Stanford and NN/g research cited above, visitors judge credibility from design before reading a word, which shapes whether they convert at all.",
+  },
+  {
+    q: "Is a scroll-driven or cinematic site slower than a normal website?",
+    a: 'Not if it\'s built correctly — that\'s the actual hard part, not the visual design. It takes the same discipline covered above in "the part nobody puts in the case study": careful compression, staged loading, and testing on a real connection, not a fast office one.',
+  },
+];
+
+const ARTICLE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: "What Makes a Premium Website Actually Work (Not Just Look Expensive)",
+  description: DESCRIPTION,
+  datePublished: PUBLISHED,
+  dateModified: PUBLISHED,
+  author: { "@type": "Person", name: SITE_NAME, url: SITE_URL },
+  publisher: { "@type": "Person", name: SITE_NAME },
+  image: `${SITE_URL}${OG_IMAGE}`,
+  mainEntityOfPage: `${SITE_URL}/blog/premium-website`,
 };
 
 function P({ children }: { children: React.ReactNode }) {
@@ -41,6 +84,14 @@ function Home({ children }: { children: React.ReactNode }) {
 export default function Post() {
   return (
     <article className="mx-auto max-w-2xl px-6 pt-40 pb-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ARTICLE_JSON_LD) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQS)) }}
+      />
       <p className="font-mono text-[10px] uppercase tracking-wide text-neutral-500">
         September 3, 2026 · Case study · 15 min read
       </p>
@@ -456,6 +507,9 @@ export default function Post() {
         approach behind <Home>this site&apos;s homepage</Home>, which exists specifically to be
         looked at with that stranger&apos;s eyes rather than described secondhand.
       </P>
+
+      <H2>Frequently asked questions</H2>
+      <FAQ items={FAQS} title="" />
 
       <div className="mt-16 rounded-2xl border border-white/10 bg-neutral-900/50 p-8 text-center">
         <p className="text-neutral-300">

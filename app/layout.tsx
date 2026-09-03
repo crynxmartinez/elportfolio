@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import { pageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -13,10 +14,34 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.raphaelmartinez.dev"),
-  title: "Raphael Martinez — Premium Website Design",
-  description:
-    "Premium website design for luxury brands, builders, and developers — plus GHL system builds for agencies. Cinematic, scroll-driven, built to match the quality of the work behind it.",
+  metadataBase: new URL(SITE_URL),
+  ...pageMetadata({
+    title: "Raphael Martinez — Premium Website Design",
+    description:
+      "Premium website design for luxury brands, builders, and developers — plus GHL system builds for agencies. Cinematic, scroll-driven, built to match the quality of the work behind it.",
+    path: "/",
+  }),
+};
+
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      jobTitle: "Premium Website Designer & GHL Systems Specialist",
+      knowsAbout: ["Web Design", "Web Development", "GoHighLevel", "SEO"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      publisher: { "@id": `${SITE_URL}/#person` },
+    },
+  ],
 };
 
 const NAV = [
@@ -31,6 +56,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#05080a] text-neutral-100">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+        />
         <header className="fixed top-0 z-50 w-full">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
             <Link href="/" className="flex items-center gap-2">

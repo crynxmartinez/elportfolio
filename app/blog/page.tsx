@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { POSTS } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Blog — Raphael Martinez",
   description: "Notes on premium website design, GHL systems, and building for real brands.",
-};
+  path: "/blog",
+});
 
 export default function Blog() {
   return (
