@@ -87,8 +87,16 @@ function validate(fileContent) {
     });
   }
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
-  if (wordCount < 2000) errors.push(`body too short (${wordCount} words, want ~3000)`);
-  return { errors, data, wordCount };
+  if (wordCount < 2500) errors.push(`body too short (${wordCount} words, want ~3000)`);
+
+  const links = content.match(/\[[^\]]+\]\(https?:\/\/[^)]+\)/g) || [];
+  if (links.length < 5) {
+    errors.push(
+      `only ${links.length} real markdown links [text](https://...) found in the body - citations must be actual clickable links, not just named sources. Want at least 5-8.`
+    );
+  }
+
+  return { errors, data, wordCount, linkCount: links.length };
 }
 
 function buildPrompt(existingPosts, referenceMd) {
@@ -107,8 +115,8 @@ ${referenceMd}
 
 Task:
 1. Pick ONE topic, rotating across three buckets so the blog stays varied: (a) website design / premium web design, (b) SEO, (c) how businesses combine a website with SEO to actually grow (lead generation, conversion, local search, etc). Pick whichever bucket is least recently covered by the existing posts above.
-2. Research it for REAL using the web_search tool. Every factual claim, statistic, or named study must come from a real source you actually found via search, cited inline as a Markdown link - same style as the reference post (Stanford, NN/g, Google/Deloitte, Baymard, etc). Never invent a statistic, study, or source. If you can't verify something, phrase it as reasoned opinion, not a cited fact.
-3. Write approximately 3000 words in that same direct, no-hype voice, with clear H2 (##) / H3 (###) section headings.
+2. Research it for REAL using the web_search tool. Every factual claim, statistic, or named study must come from a real source you actually found via search, cited inline as an ACTUAL CLICKABLE MARKDOWN LINK - not just naming the source in prose. Wrong: "Whitespark's report found X." Right: "[Whitespark's report](https://actual-url-you-found) found X." Use the real URL of the page you searched and read - never a placeholder or invented URL. Aim for 5-8 such links spread through the piece, the same density as the reference post. Never invent a statistic, study, or source. If you can't verify something, phrase it as reasoned opinion, not a cited fact.
+3. Write approximately 3000 words in that same direct, no-hype voice, with clear H2 (##) / H3 (###) section headings. Write in normal flowing paragraphs - do not break sentences across lines with stray line breaks.
 4. Write exactly 5 FAQs - the most genuinely common real-world questions on this topic - matching the tone/depth of the reference post's FAQs.
 5. Output ONLY the complete file content (frontmatter + Markdown body) between the literal markers <<<FILE>>> and <<<END>>>, with nothing else outside those markers - no preamble, no commentary. The frontmatter must be exactly this shape:
 
