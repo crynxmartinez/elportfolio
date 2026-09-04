@@ -63,8 +63,46 @@ async function callClaude(messages) {
   if (!res.ok) {
     throw new Error(`Anthropic API error ${res.status}: ${JSON.stringify(data.error || data)}`);
   }
-  const textBlocks = (data.content || []).filter((b) => b.type === "text").map((b) => b.text);
-  return { text: textBlocks.join("\n"), stopReason: data.stop_reason, raw: data };
+  return { text: extractText(data.content || []), stopReason: data.stop_reason, raw: data };
+}
+
+/* The web_search tool returns grounded claims as separate text blocks each
+   carrying a `citations` array (url/title), rather than the model writing
+   [text](url) markdown itself - and those blocks are meant to concatenate
+   into continuous prose, not one-per-line. This turns each cited span into
+   a real markdown link (merging consecutive spans citing the same URL into
+   one link) and joins everything with no extra whitespace. */
+function extractText(contentBlocks) {
+  let out = "";
+  let openUrl = null;
+  let openBuf = "";
+
+  function closeLink() {
+    if (openUrl) {
+      out += `[${openBuf}](${openUrl})`;
+      openUrl = null;
+      openBuf = "";
+    }
+  }
+
+  for (const block of contentBlocks) {
+    if (block.type !== "text") continue;
+    const url = block.citations && block.citations.length ? block.citations[0].url : null;
+    if (url) {
+      if (openUrl === url) {
+        openBuf += block.text;
+      } else {
+        closeLink();
+        openUrl = url;
+        openBuf = block.text;
+      }
+    } else {
+      closeLink();
+      out += block.text;
+    }
+  }
+  closeLink();
+  return out;
 }
 
 function extractFile(text) {
