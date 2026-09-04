@@ -46,6 +46,7 @@ const JSON_LD = {
 
 const NAV = [
   { href: "/portfolio", label: "Portfolio" },
+  { href: "/testimonials", label: "Testimonials" },
   { href: "/blog", label: "Blog" },
 ];
 

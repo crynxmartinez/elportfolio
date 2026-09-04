@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -17,60 +18,41 @@ export default function Contact() {
         honest read, including if it&apos;s not a fit.
       </p>
 
-      <form className="mt-14 grid gap-6 sm:grid-cols-2" method="post" action="mailto:hello@example.com">
-        <div className="sm:col-span-1">
-          <label className="font-mono text-xs uppercase tracking-wide text-neutral-500" htmlFor="name">Name</label>
-          <input
-            id="name"
-            name="name"
-            required
-            className="mt-2 w-full rounded-lg border border-white/15 bg-white/[0.02] px-4 py-3 text-sm outline-none focus:border-teal-300/60"
-          />
-        </div>
-        <div className="sm:col-span-1">
-          <label className="font-mono text-xs uppercase tracking-wide text-neutral-500" htmlFor="email">Email</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            className="mt-2 w-full rounded-lg border border-white/15 bg-white/[0.02] px-4 py-3 text-sm outline-none focus:border-teal-300/60"
-          />
-        </div>
-        <div className="sm:col-span-2">
-          <label className="font-mono text-xs uppercase tracking-wide text-neutral-500" htmlFor="project">What are you building?</label>
-          <select
-            id="project"
-            name="project"
-            className="mt-2 w-full rounded-lg border border-white/15 bg-white/[0.02] px-4 py-3 text-sm outline-none focus:border-teal-300/60"
-          >
-            <option>A premium/cinematic website</option>
-            <option>A GHL-connected system</option>
-            <option>Not sure yet</option>
-          </select>
-        </div>
-        <div className="sm:col-span-2">
-          <label className="font-mono text-xs uppercase tracking-wide text-neutral-500" htmlFor="message">Details</label>
-          <textarea
-            id="message"
-            name="message"
-            rows={5}
-            required
-            className="mt-2 w-full rounded-lg border border-white/15 bg-white/[0.02] px-4 py-3 text-sm outline-none focus:border-teal-300/60"
-          />
-        </div>
-        <button
-          type="submit"
-          className="sm:col-span-2 mt-2 w-fit rounded-full border border-teal-300/40 bg-teal-400/10 px-8 py-3 font-mono text-xs uppercase tracking-wide text-teal-200 hover:bg-teal-400/20"
-        >
-          Send
-        </button>
-      </form>
+      <div className="mt-14 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+        <iframe
+          src="https://api.leadconnectorhq.com/widget/form/hWb5eZ40ZksIZgMjyWqB"
+          style={{ width: "100%", height: "465px", border: "none" }}
+          id="inline-hWb5eZ40ZksIZgMjyWqB"
+          data-layout="{'id':'INLINE'}"
+          data-trigger-type="alwaysShow"
+          data-trigger-value=""
+          data-activation-type="alwaysActivated"
+          data-activation-value=""
+          data-deactivation-type="neverDeactivate"
+          data-deactivation-value=""
+          data-form-name="Raphael Paul Martinez"
+          data-height="465"
+          data-layout-iframe-id="inline-hWb5eZ40ZksIZgMjyWqB"
+          data-form-id="hWb5eZ40ZksIZgMjyWqB"
+          data-cookie-consent="true"
+          data-cookie-consent-provider="auto"
+          title="Contact Raphael Martinez"
+        />
+      </div>
+      <Script src="https://link.msgsndr.com/js/form_embed.js" strategy="afterInteractive" />
 
       <div className="mt-16 border-t border-white/10 pt-8 text-sm text-neutral-400">
         <p>Or reach out directly:</p>
         <p className="mt-2">
-          WhatsApp: <span className="text-neutral-200">+63 915 216 8012</span>
+          WhatsApp:{" "}
+          <a
+            href="https://wa.me/639152168012"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-neutral-200 hover:text-teal-300"
+          >
+            +63 915 216 8012
+          </a>
         </p>
         <p>Based in the Philippines · working with clients worldwide</p>
       </div>

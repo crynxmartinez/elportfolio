@@ -3,7 +3,7 @@ import { SITE_URL } from "@/lib/seo";
 import { getAllPosts } from "@/lib/posts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/portfolio", "/blog", "/contact"];
+  const staticRoutes = ["", "/portfolio", "/testimonials", "/blog", "/contact"];
   const postRoutes = getAllPosts().map((p) => `/blog/${p.slug}`);
   const routes = [...staticRoutes, ...postRoutes];
 
