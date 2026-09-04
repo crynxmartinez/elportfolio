@@ -10,15 +10,18 @@ export function pageMetadata({
   path = "",
   type = "website",
   publishedTime,
+  image,
 }: {
   title: string;
   description: string;
   path?: string;
   type?: "website" | "article";
   publishedTime?: string;
+  image?: string;
 }): Metadata {
   const url = `${SITE_URL}${path}`;
-  const images = [{ url: OG_IMAGE, width: 1200, height: 630, alt: title }];
+  const ogImage = image || OG_IMAGE;
+  const images = [{ url: ogImage, width: 1200, height: 630, alt: title }];
 
   const openGraph: Metadata["openGraph"] =
     type === "article"
@@ -49,7 +52,7 @@ export function pageMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [OG_IMAGE],
+      images: [ogImage],
     },
   };
 }

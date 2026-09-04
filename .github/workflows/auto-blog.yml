@@ -24,6 +24,7 @@ jobs:
       - name: Generate post
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: node scripts/generate-post.mjs
 
       - name: Commit and push if a new post was written

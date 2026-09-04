@@ -3,6 +3,11 @@ title: "What Makes a Premium Website Actually Work (Not Just Look Expensive)"
 excerpt: "A research-backed case study: the trust and speed data behind premium design, and a real scroll-driven build walked through decision by decision."
 date: "2026-09-03"
 readTime: "15 min read"
+coverImage: "https://images.pexels.com/photos/251225/pexels-photo-251225.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+coverImageAlt: "Stylish and efficient workspace with multiple monitors, laptop, and smartphone, showcasing a web design project."
+coverCredit:
+  name: "Tranmautritam"
+  url: "https://www.pexels.com/@tranmautritam"
 faqs:
   - q: "How much does a premium website actually cost?"
     a: "It scales more with scope — source material, animation complexity, page count — than with any fixed formula. A scroll-driven build like the MAREA case study above costs more in engineering time (compression, preloading) than in visual design time. Worth asking about directly for your specific project rather than guessing from a template price."

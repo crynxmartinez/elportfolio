@@ -3,6 +3,11 @@ title: "A Beautiful Website Isn't a Marketing Plan: How Local SEO Actually Turns
 excerpt: "The data behind why premium local businesses lose work to inferior competitors online, and how Google Business Profile, reviews, and website structure actually work together to generate leads."
 date: "2026-09-04"
 readTime: "16 min read"
+coverImage: "https://images.pexels.com/photos/8475169/pexels-photo-8475169.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+coverImageAlt: "A man in an apron opens a grocery store door in Portugal, ready for business."
+coverCredit:
+  name: "Kampus Production"
+  url: "https://www.pexels.com/@kampus"
 faqs:
   - q: "Do I need local SEO if I already have a beautiful website?"
     a: "Yes, and they're not substitutes for each other. A beautiful website is what converts someone once they find you. Local SEO — your Google Business Profile, reviews, and how your site is structured for search — is what determines whether they find you at all. Per the ranking factor research above, a great site with a neglected Google Business Profile is invisible to the exact searches most likely to convert."

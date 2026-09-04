@@ -11,6 +11,8 @@ import type { FAQItem } from "@/components/FAQ";
 
 const POSTS_DIR = path.join(process.cwd(), "content", "blog");
 
+export type CoverCredit = { name: string; url: string };
+
 export type PostMeta = {
   slug: string;
   title: string;
@@ -18,6 +20,9 @@ export type PostMeta = {
   date: string; // YYYY-MM-DD
   readTime: string;
   faqs: FAQItem[];
+  coverImage?: string;
+  coverImageAlt?: string;
+  coverCredit?: CoverCredit;
 };
 
 export type Post = PostMeta & { html: string };
@@ -26,6 +31,20 @@ function readFrontmatter(slug: string) {
   const file = path.join(POSTS_DIR, `${slug}.md`);
   const raw = fs.readFileSync(file, "utf8");
   return matter(raw);
+}
+
+function metaFromData(slug: string, data: Record<string, unknown>): PostMeta {
+  return {
+    slug,
+    title: data.title as string,
+    excerpt: data.excerpt as string,
+    date: data.date as string,
+    readTime: data.readTime as string,
+    faqs: (data.faqs as FAQItem[]) ?? [],
+    coverImage: data.coverImage as string | undefined,
+    coverImageAlt: data.coverImageAlt as string | undefined,
+    coverCredit: data.coverCredit as CoverCredit | undefined,
+  };
 }
 
 export function getAllSlugs(): string[] {
@@ -38,17 +57,7 @@ export function getAllSlugs(): string[] {
 
 export function getAllPosts(): PostMeta[] {
   return getAllSlugs()
-    .map((slug) => {
-      const { data } = readFrontmatter(slug);
-      return {
-        slug,
-        title: data.title as string,
-        excerpt: data.excerpt as string,
-        date: data.date as string,
-        readTime: data.readTime as string,
-        faqs: (data.faqs as FAQItem[]) ?? [],
-      };
-    })
+    .map((slug) => metaFromData(slug, readFrontmatter(slug).data))
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
@@ -65,13 +74,5 @@ export async function getPost(slug: string): Promise<Post | null> {
     .use(rehypeStringify)
     .process(content);
 
-  return {
-    slug,
-    title: data.title as string,
-    excerpt: data.excerpt as string,
-    date: data.date as string,
-    readTime: data.readTime as string,
-    faqs: (data.faqs as FAQItem[]) ?? [],
-    html: String(result),
-  };
+  return { ...metaFromData(slug, data), html: String(result) };
 }

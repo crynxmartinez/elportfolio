@@ -14,10 +14,31 @@ const POSTS_DIR = path.join(ROOT, "content", "blog");
 const REFERENCE_SLUG = "premium-website";
 const MODEL = "claude-sonnet-5";
 const API_KEY = process.env.ANTHROPIC_API_KEY;
+const PEXELS_KEY = process.env.PEXELS_API_KEY;
 
 if (!API_KEY) {
   console.error("ANTHROPIC_API_KEY is not set.");
   process.exit(1);
+}
+if (!PEXELS_KEY) {
+  console.error("PEXELS_API_KEY is not set.");
+  process.exit(1);
+}
+
+async function fetchCoverImage(query) {
+  const res = await fetch(
+    `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=1&orientation=landscape`,
+    { headers: { Authorization: PEXELS_KEY } }
+  );
+  if (!res.ok) throw new Error(`Pexels API error ${res.status}: ${await res.text()}`);
+  const data = await res.json();
+  const photo = data.photos && data.photos[0];
+  if (!photo) throw new Error(`No Pexels results for query "${query}"`);
+  return {
+    coverImage: photo.src.large2x || photo.src.large,
+    coverImageAlt: photo.alt || query,
+    coverCredit: { name: photo.photographer, url: photo.photographer_url },
+  };
 }
 
 function readExistingPosts() {
@@ -118,6 +139,7 @@ function validate(fileContent) {
   if (!data.excerpt || typeof data.excerpt !== "string") errors.push("missing excerpt");
   if (!data.date || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) errors.push("missing/invalid date (YYYY-MM-DD)");
   if (!data.readTime || typeof data.readTime !== "string") errors.push("missing readTime");
+  if (!data.imageQuery || typeof data.imageQuery !== "string") errors.push("missing imageQuery");
   if (!Array.isArray(data.faqs) || data.faqs.length !== 5) errors.push("faqs must be an array of exactly 5 items");
   else {
     data.faqs.forEach((f, i) => {
@@ -156,13 +178,15 @@ Task:
 2. Research it for REAL using the web_search tool. Every factual claim, statistic, or named study must come from a real source you actually found via search, cited inline as an ACTUAL CLICKABLE MARKDOWN LINK - not just naming the source in prose. Wrong: "Whitespark's report found X." Right: "[Whitespark's report](https://actual-url-you-found) found X." Use the real URL of the page you searched and read - never a placeholder or invented URL. Aim for 5-8 such links spread through the piece, the same density as the reference post. Never invent a statistic, study, or source. If you can't verify something, phrase it as reasoned opinion, not a cited fact.
 3. Write AT LEAST 3000 words (aim for 3200-3500 to be safe - err long, not short) in that same direct, no-hype voice, with clear H2 (##) / H3 (###) section headings. That means covering enough distinct sub-topics: expect 7-9 H2 sections, not 4-5. Write in normal flowing paragraphs - do not break sentences across lines with stray line breaks.
 4. Write exactly 5 FAQs - the most genuinely common real-world questions on this topic - matching the tone/depth of the reference post's FAQs.
-5. Output ONLY the complete file content (frontmatter + Markdown body) between the literal markers <<<FILE>>> and <<<END>>>, with nothing else outside those markers - no preamble, no commentary. The frontmatter must be exactly this shape:
+5. Also write an \`imageQuery\` field: a 2-4 word English search phrase for a real stock photo on Pexels that would work well as this post's cover image (concrete and visual, e.g. "laptop coding desk" or "small business storefront" - not abstract like "success" or "growth").
+6. Output ONLY the complete file content (frontmatter + Markdown body) between the literal markers <<<FILE>>> and <<<END>>>, with nothing else outside those markers - no preamble, no commentary. The frontmatter must be exactly this shape:
 
 ---
 title: "..."
 excerpt: "1-2 sentence summary"
 date: "${today}"
 readTime: "NN min read"
+imageQuery: "..."
 faqs:
   - q: "..."
     a: "..."
@@ -246,16 +270,37 @@ async function main() {
       fs.unlinkSync(filePath);
       throw new Error(`Repair pass failed validation: ${revalidated.errors.join("; ")}. Aborting.`);
     }
-    fs.writeFileSync(filePath, repaired, "utf8");
+    fileContent = repaired;
+    data = revalidated.data;
+    wordCount = revalidated.wordCount;
+    fs.writeFileSync(filePath, fileContent, "utf8");
     result = tryBuild();
     if (!result.ok) {
       fs.unlinkSync(filePath);
       throw new Error(`Build still failing after repair pass. Aborting, no file left behind.\n${result.output.slice(-4000)}`);
     }
-    wordCount = matter(repaired).content.trim().split(/\s+/).filter(Boolean).length;
   }
 
-  console.log(`SUCCESS: "${data.title}" (${slug}), ${wordCount} words, build passed.`);
+  // Text + build are both good now - fetch and inject the cover image last,
+  // as a single final step, then rebuild once more to confirm the
+  // frontmatter edit itself didn't break anything.
+  console.log(`Fetching Pexels cover image for "${data.imageQuery}"...`);
+  const { content: bodyOnly, data: fmData } = matter(fileContent);
+  const cover = await fetchCoverImage(data.imageQuery);
+  fmData.coverImage = cover.coverImage;
+  fmData.coverImageAlt = cover.coverImageAlt;
+  fmData.coverCredit = cover.coverCredit;
+  delete fmData.imageQuery;
+  fileContent = matter.stringify(bodyOnly, fmData);
+  fs.writeFileSync(filePath, fileContent, "utf8");
+
+  result = tryBuild();
+  if (!result.ok) {
+    fs.unlinkSync(filePath);
+    throw new Error(`Build failed after adding the cover image. Aborting, no file left behind.\n${result.output.slice(-4000)}`);
+  }
+
+  console.log(`SUCCESS: "${data.title}" (${slug}), ${wordCount} words, cover by ${cover.coverCredit.name}, build passed.`);
 }
 
 main().catch((err) => {

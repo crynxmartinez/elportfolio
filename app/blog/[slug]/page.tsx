@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { getAllSlugs, getPost } from "@/lib/posts";
 import { pageMetadata, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/seo";
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
     path: `/blog/${slug}`,
     type: "article",
     publishedTime: post.date,
+    image: post.coverImage,
   });
 }
 
@@ -37,7 +39,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
     dateModified: post.date,
     author: { "@type": "Person", name: SITE_NAME, url: SITE_URL },
     publisher: { "@type": "Person", name: SITE_NAME },
-    image: `${SITE_URL}${OG_IMAGE}`,
+    image: post.coverImage || `${SITE_URL}${OG_IMAGE}`,
     mainEntityOfPage: `${SITE_URL}/blog/${slug}`,
   };
 
@@ -61,6 +63,43 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
       </p>
       <h1 className="font-display mt-4 text-3xl leading-tight sm:text-4xl">{post.title}</h1>
       <p className="mt-4 text-sm text-neutral-500">{post.excerpt}</p>
+
+      {post.coverImage && (
+        <figure className="mt-10">
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl">
+            <Image
+              src={post.coverImage}
+              alt={post.coverImageAlt || post.title}
+              fill
+              sizes="(min-width: 672px) 672px, 100vw"
+              className="object-cover"
+              priority
+            />
+          </div>
+          {post.coverCredit && (
+            <figcaption className="mt-2 font-mono text-[10px] uppercase tracking-wide text-neutral-600">
+              Photo by{" "}
+              <a
+                href={post.coverCredit.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-neutral-400"
+              >
+                {post.coverCredit.name}
+              </a>{" "}
+              on{" "}
+              <a
+                href="https://www.pexels.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-neutral-400"
+              >
+                Pexels
+              </a>
+            </figcaption>
+          )}
+        </figure>
+      )}
 
       <div className="post-content" dangerouslySetInnerHTML={{ __html: post.html }} />
 
