@@ -2,10 +2,12 @@
 // scenario (see lib/scenarios.mjs, shared with the Facebook business-story
 // poster but tracked in its own log so the two channels don't repeat each
 // other), has Claude (with web_search, so the underlying facts are real)
-// write a structured 8-10 page case-study, renders it as a PDF with pdfkit,
-// uploads it to GHL's media library, and publishes it through GHL's Social
-// Planner to the LinkedIn account - GHL accepts a PDF as post media
-// (type: "pdf"), which LinkedIn renders as a swipeable document carousel.
+// write a structured 8-page case-study, renders each page as its own JPEG
+// (see lib/render-carousel.mjs), uploads all of them to GHL's media
+// library, and publishes through GHL's Social Planner with
+// linkedinPostDetails.postAsPdf: true - GHL assembles the images into the
+// swipeable PDF/document carousel itself. A raw pre-built PDF is only
+// accepted for drafts in the composer UI, not at publish time via this API.
 //
 // Same honesty rule as the Facebook version: composite/illustrative
 // scenario based on a real recurring pattern, not a specific named,
@@ -13,9 +15,9 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import PDFDocument from "pdfkit";
 import { pickScenario, scenarioKey } from "./lib/scenarios.mjs";
 import { confirmPost } from "./lib/ghl.mjs";
+import { renderCoverPage, renderBodyPage, renderClosingPage } from "./lib/render-carousel.mjs";
 
 const ROOT = process.cwd();
 const LOG_FILE = path.join(ROOT, "content", "linkedin-carousel-log.json");
@@ -147,63 +149,14 @@ async function fetchPexelsImage(query) {
   return Buffer.from(await imgRes.arrayBuffer());
 }
 
-const PAGE_W = 1080;
-const PAGE_H = 1350; // 4:5, LinkedIn document-post friendly aspect ratio
-
-function newPage(doc, isFirst) {
-  if (!isFirst) doc.addPage({ size: [PAGE_W, PAGE_H], margin: 0 });
-}
-
-function drawBackground(doc) {
-  doc.rect(0, 0, PAGE_W, PAGE_H).fill("#05080a");
-}
-
-function drawCoverPage(doc, title, hook, coverImage) {
-  drawBackground(doc);
-  if (coverImage) {
-    doc.image(coverImage, 0, 0, { width: PAGE_W, height: PAGE_H * 0.55, cover: [PAGE_W, PAGE_H * 0.55] });
-    doc.rect(0, 0, PAGE_W, PAGE_H * 0.55).fill("#05080aaa");
+async function renderPages(content, coverImage) {
+  const pages = [];
+  pages.push(await renderCoverPage({ title: content.title, hook: content.hook, imageBuffer: coverImage, brandName: SITE_NAME }));
+  for (let i = 0; i < content.pages.length; i++) {
+    pages.push(await renderBodyPage({ index: i + 1, heading: content.pages[i].heading, body: content.pages[i].body }));
   }
-  doc.fillColor("#f4c95d").font("Helvetica-Bold").fontSize(30).text("EL MARTINEZ", 70, PAGE_H * 0.58);
-  doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(56).text(title, 70, PAGE_H * 0.64, { width: PAGE_W - 140 });
-  doc.fillColor("#c9c9c9").font("Helvetica").fontSize(26).text(hook, 70, PAGE_H * 0.85, { width: PAGE_W - 140 });
-}
-
-function drawBodyPage(doc, index, heading, body) {
-  drawBackground(doc);
-  doc.fillColor("#f4c95d").font("Helvetica-Bold").fontSize(22).text(`0${index}`, 70, 90);
-  doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(44).text(heading, 70, 150, { width: PAGE_W - 140 });
-  doc.fillColor("#dcdcdc").font("Helvetica").fontSize(30).text(body, 70, 320, { width: PAGE_W - 140, lineGap: 8 });
-}
-
-function drawClosingPage(doc, heading, body) {
-  drawBackground(doc);
-  doc.fillColor("#f4c95d").font("Helvetica-Bold").fontSize(40).text(heading, 70, 420, { width: PAGE_W - 140 });
-  doc.fillColor("#dcdcdc").font("Helvetica").fontSize(28).text(body, 70, 520, { width: PAGE_W - 140, lineGap: 8 });
-  doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(26).text(SITE_NAME, 70, PAGE_H - 160);
-  doc.fillColor("#f4c95d").font("Helvetica").fontSize(22).text(SITE_URL, 70, PAGE_H - 125);
-}
-
-async function buildPdf(content, coverImage) {
-  const doc = new PDFDocument({ size: [PAGE_W, PAGE_H], margin: 0 });
-  const chunks = [];
-  doc.on("data", (c) => chunks.push(c));
-  const done = new Promise((resolve) => doc.on("end", resolve));
-
-  newPage(doc, true);
-  drawCoverPage(doc, content.title, content.hook, coverImage);
-
-  content.pages.forEach((p, i) => {
-    newPage(doc, false);
-    drawBodyPage(doc, i + 1, p.heading, p.body);
-  });
-
-  newPage(doc, false);
-  drawClosingPage(doc, content.closingHeading, content.closingBody);
-
-  doc.end();
-  await done;
-  return Buffer.concat(chunks);
+  pages.push(await renderClosingPage({ heading: content.closingHeading, body: content.closingBody, siteName: SITE_NAME, siteUrl: SITE_URL }));
+  return pages;
 }
 
 const EXPIRY_WARNING_DAYS = 7;
@@ -263,38 +216,43 @@ async function main() {
     if (errors.length) throw new Error(`Validation failed after correction pass: ${errors.join("; ")}`);
   }
 
-  console.log(`Content ready: "${content.title}". Fetching cover image and building PDF...`);
+  console.log(`Content ready: "${content.title}". Fetching cover image and rendering pages...`);
 
   const imageQuery = scenario.businessType.replace(/^an? /, "");
   const coverImage = await fetchPexelsImage(imageQuery);
-  const pdfBuffer = await buildPdf(content, coverImage);
+  const pageImages = await renderPages(content, coverImage);
 
-  console.log(`PDF built (${pdfBuffer.length} bytes, ${content.pages.length + 2} pages). Uploading to GHL media library...`);
-  const uploadForm = new FormData();
-  uploadForm.append("file", new Blob([pdfBuffer], { type: "application/pdf" }), "case-study.pdf");
-  const uploadRes = await fetch(`${GHL_BASE}/medias/upload-file`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${GHL_TOKEN}`, Version: "v3" },
-    body: uploadForm,
-  });
-  const uploadResult = await uploadRes.json();
-  if (!uploadRes.ok || !uploadResult.url) {
-    throw new Error(`GHL media upload failed: ${JSON.stringify(uploadResult)}`);
+  console.log(`Rendered ${pageImages.length} pages. Uploading each to GHL media library...`);
+  const media = [];
+  for (let i = 0; i < pageImages.length; i++) {
+    const uploadForm = new FormData();
+    uploadForm.append("file", new Blob([pageImages[i]], { type: "image/jpeg" }), `page-${i + 1}.jpg`);
+    const uploadRes = await fetch(`${GHL_BASE}/medias/upload-file`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${GHL_TOKEN}`, Version: "v3" },
+      body: uploadForm,
+    });
+    const uploadResult = await uploadRes.json();
+    if (!uploadRes.ok || !uploadResult.url) {
+      throw new Error(`GHL media upload failed for page ${i + 1}: ${JSON.stringify(uploadResult)}`);
+    }
+    media.push({ url: uploadResult.url, type: "image/jpeg" });
   }
 
   const summary = `${content.title}\n\n${content.hook}`;
 
-  console.log("Publishing through GHL Social Planner to LinkedIn...");
+  console.log("Publishing through GHL Social Planner to LinkedIn as a document carousel...");
   const postRes = await fetch(`${GHL_BASE}/social-media-posting/${GHL_LOCATION_ID}/posts`, {
     method: "POST",
     headers: { Authorization: `Bearer ${GHL_TOKEN}`, Version: "v3", "Content-Type": "application/json" },
     body: JSON.stringify({
       accountIds: [GHL_ACCOUNT_ID],
       summary,
-      media: [{ url: uploadResult.url, type: "pdf" }],
+      media,
       status: "published",
       type: "post",
       userId: GHL_USER_ID,
+      linkedinPostDetails: { postAsPdf: true, pdfTitle: content.title.slice(0, 100) },
     }),
   });
   const postResult = await postRes.json();
