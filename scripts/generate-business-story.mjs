@@ -12,7 +12,8 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { SCENARIOS, pickScenario, scenarioKey } from "./lib/scenarios.mjs";
+import { pickScenario, scenarioKey } from "./lib/scenarios.mjs";
+import { confirmPost } from "./lib/ghl.mjs";
 
 const ROOT = process.cwd();
 const LOG_FILE = path.join(ROOT, "content", "business-story-log.json");
@@ -216,26 +217,7 @@ async function main() {
   const postResult = await postRes.json();
   if (!postRes.ok) throw new Error(`GHL post creation failed: ${JSON.stringify(postResult)}`);
 
-  let ghlPostId = null;
-  let previewLink = null;
-  try {
-    const listRes = await fetch(`${GHL_BASE}/social-media-posting/${GHL_LOCATION_ID}/posts/list`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${GHL_TOKEN}`, Version: "v3", "Content-Type": "application/json" },
-      body: JSON.stringify({ limit: "5", skip: "0" }),
-    });
-    const listData = await listRes.json();
-    const match = (listData.results?.posts || []).find((p) => p.summary === post);
-    if (match) {
-      ghlPostId = match._id ?? null;
-      previewLink = match.previewLink ?? null;
-    }
-  } catch (e) {
-    console.log("Could not confirm post id/link via list lookup:", e.message);
-  }
-  if (!ghlPostId) {
-    console.log("Raw create response (for debugging):", JSON.stringify(postResult));
-  }
+  const { ghlPostId, previewLink } = await confirmPost(post, postResult, { token: GHL_TOKEN, locationId: GHL_LOCATION_ID });
 
   log.push({
     key: scenarioKey(scenario),
