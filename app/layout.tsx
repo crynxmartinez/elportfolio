@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import SiteHeader from "@/components/SiteHeader";
 import { pageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 const fraunces = Fraunces({
   variable: "--font-display",
   subsets: ["latin"],
@@ -18,7 +22,7 @@ export const metadata: Metadata = {
   ...pageMetadata({
     title: "Raphael Martinez — Premium Website Design",
     description:
-      "Premium website design for luxury brands, builders, and developers — plus GHL system builds for agencies. Cinematic, scroll-driven, built to match the quality of the work behind it.",
+      "Professional website design, SEO and connected GHL systems for service businesses. Explore the work of Raphael Martinez.",
     path: "/",
   }),
 };
@@ -44,12 +48,6 @@ const JSON_LD = {
   ],
 };
 
-const NAV = [
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/testimonials", label: "Testimonials" },
-  { href: "/blog", label: "Blog" },
-];
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -61,34 +59,26 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
         />
-        <header className="fixed top-0 z-50 w-full">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
-              <span className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-200">
-                Raphael Martinez
-              </span>
-            </Link>
-            <nav className="flex items-center gap-8 font-mono text-xs uppercase tracking-[0.15em] text-neutral-400">
-              {NAV.map((n) => (
-                <Link key={n.href} href={n.href} className="transition-colors hover:text-teal-300">
-                  {n.label}
-                </Link>
-              ))}
-              <Link
-                href="/contact"
-                className="rounded-full border border-white/15 px-4 py-2 text-neutral-100 transition hover:border-teal-300/60 hover:text-teal-300"
-              >
-                Contact us
-              </Link>
-            </nav>
-          </div>
-        </header>
-        <main className="flex-1">{children}</main>
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
+        <SiteHeader />
+        <noscript>
+          <style>{`.menu-toggle{display:none!important}.site-nav{display:flex!important;flex-wrap:wrap;gap:12px}.header-inner{flex-wrap:wrap;gap:18px}`}</style>
+        </noscript>
+        <main id="main-content" className="flex-1">
+          {children}
+        </main>
         <footer className="border-t border-white/10 py-10 font-mono text-xs uppercase tracking-wide text-neutral-500">
           <div className="mx-auto max-w-6xl px-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span>&copy; {new Date().getFullYear()} Raphael Martinez — Premium website design + GHL systems</span>
+            <span>
+              &copy; {new Date().getFullYear()} Raphael Martinez — Premium
+              website design + GHL systems
+            </span>
             <span>Philippines · working with clients worldwide</span>
+            <Link href="/privacy" className="hover:text-teal-200">
+              Privacy
+            </Link>
           </div>
         </footer>
       </body>

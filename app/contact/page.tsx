@@ -9,13 +9,17 @@ export const metadata = pageMetadata({
 
 export default function Contact() {
   return (
-    <div className="mx-auto max-w-3xl px-6 pt-40 pb-24">
-      <p className="font-mono text-xs uppercase tracking-[0.3em] text-teal-300/80">Contact</p>
-      <h1 className="font-display mt-4 text-4xl sm:text-5xl">Tell me about the project.</h1>
+    <div className="editorial mx-auto max-w-3xl px-6">
+      <p className="eyebrow">Contact / A conversation first</p>
+      <h1>
+        What would you
+        <br />
+        like to <em>improve?</em>
+      </h1>
       <p className="mt-6 max-w-lg text-neutral-400">
-        Whether it&apos;s a premium website for a brand that deserves better, or a GHL system your
-        agency needs built and wired up correctly — send the details and I&apos;ll reply with an
-        honest read, including if it&apos;s not a fit.
+        Share your current website, what is getting in the way, and what you
+        want to build next. I’ll help you work out the next step and a clear
+        project scope.
       </p>
 
       <div className="mt-14 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
@@ -39,7 +43,17 @@ export default function Contact() {
           title="Contact Raphael Martinez"
         />
       </div>
-      <Script src="https://link.msgsndr.com/js/form_embed.js" strategy="afterInteractive" />
+      <Script
+        src="https://link.msgsndr.com/js/form_embed.js"
+        strategy="afterInteractive"
+      />
+      <p className="mt-5 text-xs text-neutral-400">
+        Your details are used to respond to your enquiry.{" "}
+        <a href="/privacy" className="underline underline-offset-4">
+          Privacy information
+        </a>
+        .
+      </p>
 
       <div className="mt-16 border-t border-white/10 pt-8 text-sm text-neutral-400">
         <p>Or reach out directly:</p>

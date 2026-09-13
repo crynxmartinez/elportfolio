@@ -4,7 +4,7 @@ export type FAQItem = { q: string; a: string };
  * Native <details>/<summary> accordion - no client JS, fully crawlable.
  * Pass the same items to faqJsonLd() for the matching FAQPage schema.
  */
-export default function FAQ({ items, title = "Frequently asked questions" }: { items: FAQItem[]; title?: string }) {
+export default function FAQ({ items }: { items: FAQItem[]; title?: string }) {
   return (
     <div className="mt-8 divide-y divide-white/10 border-t border-white/10">
       {items.map((item) => (

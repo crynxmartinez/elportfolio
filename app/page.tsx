@@ -1,160 +1,284 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import SceneSequence from "@/components/SceneSequence";
-import LoadingScreen from "@/components/LoadingScreen";
-
-/**
- * The homepage is the journey - nothing else. One continuous 2,160-frame
- * scroll-scrubbed animation (9 source clips stitched end to end, each one
- * picking up exactly where the last one left off).
- *
- * Shape: hero headline holds at rest, then a question, then a three-part
- * answer as short beats spaced through the middle, then the closing CTA.
- * Restrained on purpose - four short beats across the whole scroll, not
- * one per chunk.
- *
- * The page stays gated behind a loading screen until the poster + coarse
- * frame ladder are in (covers the full scroll range at a coarse spacing),
- * so the first scroll a visitor makes is already smooth. Full-resolution
- * backfill keeps loading underneath, invisibly, after the reveal.
- *
- * Stepped, not free-scrubbed: one scroll/swipe/key auto-plays to the next
- * beat and locks briefly, rather than requiring a long manual scroll
- * through the whole 2,160-frame range. SNAP_POINTS are each beat's resting
- * point (its from/to window's midpoint, where its own fade is fully open).
- */
-
-const BEATS = [
-  { from: 0.14, to: 0.28, kind: "question" },
-  { from: 0.38, to: 0.52, kind: "answer", label: "01", title: "Trust, before anything else.", body: "A visitor decides whether you operate at this level before they read a word." },
-  { from: 0.58, to: 0.72, kind: "answer", label: "02", title: "Pacing you control.", body: "Not autoplay. You just proved that yourself, scrolling this." },
-  { from: 0.78, to: 0.9, kind: "answer", label: "03", title: "Craft as evidence.", body: "This page is the sample. Everything else is the pitch." },
+import DepthPreview from "@/components/DepthPreview";
+import ProjectCard from "@/components/ProjectCard";
+import ContactCTA from "@/components/ContactCTA";
+import FAQ, { faqJsonLd } from "@/components/FAQ";
+import { PROJECTS } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
+export const metadata = pageMetadata({
+  title: "Raphael Martinez — Website Design, SEO & GHL Systems",
+  description:
+    "Professional websites, thoughtful interactions and connected GHL systems. Explore Raphael Martinez’s work and discuss your next website.",
+  path: "/",
+});
+const faqs = [
+  {
+    q: "Can you improve my existing website?",
+    a: "Yes. We can review what is useful, what is getting in the way, and whether focused improvements or a rebuild make more sense. The scope follows the problem.",
+  },
+  {
+    q: "Does my website need 3D?",
+    a: "Only when it helps explain your work or product. A clear, fast website is the foundation. Motion is optional, with a simpler experience for smaller screens and reduced-motion preferences.",
+  },
+  {
+    q: "What can you connect with GoHighLevel?",
+    a: "Depending on your setup, the project can include enquiry forms, appointment booking, pipelines and follow-up workflows. We agree on the connections and test the agreed flows before handover.",
+  },
+  {
+    q: "Is SEO included in a website project?",
+    a: "Technical foundations can be included in the build. Competitor research, service content and ongoing SEO are separately scoped so you know what will be delivered. Rankings and enquiries cannot be guaranteed.",
+  },
+  {
+    q: "How much will my project cost?",
+    a: "That depends on the pages, content and integrations you need. Send your current website and your priorities. I’ll recommend a scope and quote before work begins.",
+  },
 ];
-
-const SNAP_POINTS = [0, 0.21, 0.45, 0.65, 0.84, 1];
-
 export default function Home() {
-  const [ready, setReady] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const revealed = useRef(false);
-
-  const reveal = () => {
-    if (revealed.current) return;
-    revealed.current = true;
-    setReady(true);
-  };
-
-  useEffect(() => {
-    if (ready) {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
-    } else {
-      // Compensate for the scrollbar that disappears once overflow locks -
-      // otherwise the whole page (canvas included) snaps sideways by its
-      // width right as the loader clears and scrolling unlocks.
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.overflow = "hidden";
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    }
-    // Safety net: never trap a visitor behind the loader on a slow connection.
-    const fallback = window.setTimeout(reveal, 8000);
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
-      window.clearTimeout(fallback);
-    };
-  }, [ready]);
-
   return (
-    <>
-      <LoadingScreen ready={ready} progress={progress} />
-      <SceneSequence
-        dir="/journey-seq"
-        counts={{ desktop: 2160, mobile: 1080 }}
-        heightVh={600}
-        ladderStep={24}
-        staticAt={0.45}
-        snapPoints={SNAP_POINTS}
-        onProgress={setProgress}
-        onReady={reveal}
-      >
-        <JourneyCopy />
-      </SceneSequence>
-    </>
-  );
-}
-
-function JourneyCopy() {
-  return (
-    <>
-      <div className="journey-copy-start">
-        <p className="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-teal-300/80">
-          Premium website design
-        </p>
-        <h1 className="font-display max-w-3xl text-4xl leading-tight sm:text-6xl sm:leading-[1.05]">
-          Websites built to match the quality of the work behind them.
-        </h1>
-        <p className="mt-8 max-w-xl text-neutral-400">
-          Cinematic, scroll-driven sites for brands that already do excellent work and deserve a
-          website that says so — plus GHL-connected system builds for agencies who need it to
-          actually run, not just look good.
-        </p>
-        <div className="mt-10 flex flex-wrap gap-4">
-          <Link
-            href="/portfolio"
-            className="rounded-full border border-teal-300/40 bg-teal-400/10 px-7 py-3 font-mono text-xs uppercase tracking-wide text-teal-200 transition hover:bg-teal-400/20"
-          >
-            See the work &rarr;
-          </Link>
-          <Link
-            href="/contact"
-            className="rounded-full border border-white/15 px-7 py-3 font-mono text-xs uppercase tracking-wide text-neutral-200 transition hover:border-white/35"
-          >
-            Start a project
-          </Link>
+    <div className="redesign-home">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(faqs)) }}
+      />
+      <section className="hero-light">
+        <div className="wide hero-grid">
+          <div className="hero-copy">
+            <p className="eyebrow">
+              <span className="status-dot" /> Independent design & development
+            </p>
+            <h1>
+              Give customers a clear reason to <em>choose you.</em>
+            </h1>
+            <p className="hero-sub">
+              For service businesses ready for a better website. I build
+              thoughtful websites that show the quality of your work and make
+              the next step easy.
+            </p>
+            <div className="hero-actions">
+              <Link className="button button-dark" href="/contact">
+                Discuss my website ↗
+              </Link>
+              <Link className="text-link" href="#selected-work">
+                See selected projects ↓
+              </Link>
+            </div>
+            <p className="hero-footnote">
+              Website design <span>·</span> SEO <span>·</span> GHL systems
+            </p>
+          </div>
+          <div className="hero-art">
+            <div className="art-orbit" aria-hidden="true" />
+            <DepthPreview>
+              <Link
+                href="/portfolio/marea"
+                className="hero-browser"
+                aria-label="Explore the MAREA resort concept"
+              >
+                <div className="browser-toolbar">
+                  <span>● ● ●</span>
+                  <span>marea / a coastal escape</span>
+                  <span>↗</span>
+                </div>
+                <Image
+                  src="/projects/marea.webp"
+                  width={1440}
+                  height={960}
+                  alt="MAREA coastal resort website concept"
+                  preload
+                  sizes="(max-width: 900px) 90vw, 48vw"
+                />
+              </Link>
+              <div className="floating-note">
+                <span className="note-symbol" aria-hidden="true">
+                  ✳
+                </span>
+                <div>
+                  Designed to be explored.<small>MAREA · Resort concept</small>
+                </div>
+              </div>
+            </DepthPreview>
+            <div className="art-caption">
+              <span>01 / SELECTED EXPLORATION</span>
+              <Link href="/portfolio/marea">View project ↗</Link>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {BEATS.map((b) =>
-        b.kind === "question" ? (
-          <div key="question" data-beat data-from={b.from} data-to={b.to}>
-            <div className="beat-card">
-              <p className="font-display text-4xl text-neutral-50 sm:text-6xl">
-                Why premium?
-              </p>
+        <div className="wide capability-line">
+          <span>Good design is just the beginning.</span>
+          <span>Clear content</span>
+          <span>Thoughtful interactions</span>
+          <span>Connected follow-up</span>
+        </div>
+      </section>
+      <section id="selected-work" className="work-section">
+        <div className="wide">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">01 / Selected work</p>
+              <h2>
+                Different challenges.
+                <br />
+                The same <em>attention to detail.</em>
+              </h2>
             </div>
+            <Link href="/portfolio" className="text-link">
+              Explore all projects ↗
+            </Link>
           </div>
-        ) : (
-          <div key={b.label} data-beat data-from={b.from} data-to={b.to} className="max-w-md">
-            <div className="beat-card">
-              <p className="font-mono text-sm font-semibold uppercase tracking-wide text-teal-200 sm:text-base">
-                {b.label} &middot; {b.title}
-              </p>
-              <p className="mt-3 text-base leading-relaxed text-neutral-100 sm:text-lg">{b.body}</p>
-            </div>
+          <div className="project-grid">
+            {["marea", "kingvet", "opervia"].map((slug, i) => (
+              <ProjectCard
+                key={slug}
+                project={PROJECTS.find((p) => p.slug === slug)!}
+                index={i}
+              />
+            ))}
           </div>
-        )
-      )}
-
-      <div data-beat data-from={0.94} data-to={1} data-last="true" className="max-w-lg">
-        <div className="beat-card">
-          <h2 className="font-display text-3xl text-neutral-50 sm:text-4xl">
-            Have a brand that deserves better than a template?
-          </h2>
-          <p className="mt-4 text-base text-neutral-100 sm:text-lg">
-            Tell me about the project. I&apos;ll tell you honestly whether a premium build is the
-            right fit for it.
+          <p className="work-note">
+            Concept projects demonstrate design and interaction. They are
+            labelled separately from tools and platforms.
           </p>
-          <Link
-            href="/contact"
-            className="mt-8 inline-block rounded-full border border-teal-300/40 bg-teal-400/10 px-8 py-3 font-mono text-xs uppercase tracking-wide text-teal-200 hover:bg-teal-400/20"
-          >
-            Get in touch
-          </Link>
         </div>
-      </div>
-    </>
+      </section>
+      <section className="section light-section">
+        <div className="wide">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">02 / More than the surface</p>
+              <h2>
+                A website is part of
+                <br />a bigger <em>conversation.</em>
+              </h2>
+            </div>
+            <p>
+              Your customer needs to understand what you offer, feel confident
+              enough to enquire, and hear back. I help connect those steps.
+            </p>
+          </div>
+          <div className="service-grid">
+            {[
+              [
+                "01",
+                "Make your work clear.",
+                "Website design & development",
+                "Unclear services. Buried projects. A difficult mobile experience. Let’s turn those obstacles into a website people can comfortably explore.",
+                "/services#websites",
+              ],
+              [
+                "02",
+                "Help people find answers.",
+                "SEO & competitor research",
+                "Use research to understand the questions customers ask, find content gaps, and decide which pages deserve attention first.",
+                "/services#seo",
+              ],
+              [
+                "03",
+                "Keep the conversation going.",
+                "GHL systems & automation",
+                "Connect enquiries, booking and follow-up so the website fits the way you work. Every workflow starts with a clear process.",
+                "/services#ghl",
+              ],
+            ].map(([n, h, label, body, url]) => (
+              <article className="service-item" key={n}>
+                <span className="service-index">{n} /</span>
+                <p className="eyebrow">{label}</p>
+                <h3>{h}</h3>
+                <p>{body}</p>
+                <Link href={url} className="text-link">
+                  Explore the service ↗
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section process-section">
+        <div className="wide process-grid">
+          <div>
+            <p className="eyebrow">03 / A considered process</p>
+            <h2>
+              Clarity at
+              <br />
+              <em>every step.</em>
+            </h2>
+            <p>
+              You work directly with the person designing and building your
+              website.
+            </p>
+          </div>
+          <ol className="process-list">
+            {[
+              [
+                "Understand",
+                "We look at your business, current website and the next step you want customers to take.",
+              ],
+              [
+                "Define",
+                "We agree on pages, content, integrations, ownership and what a finished project includes.",
+              ],
+              [
+                "Design & build",
+                "You review the direction. I build the responsive website and connect the agreed workflows.",
+              ],
+              [
+                "Test & hand over",
+                "We check devices, links and enquiry flows, then walk through how to manage your site.",
+              ],
+            ].map(([h, p], i) => (
+              <li key={h}>
+                <span>0{i + 1}</span>
+                <div>
+                  <h3>{h}</h3>
+                  <p>{p}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+      <section className="section about-strip">
+        <div className="wide about-grid">
+          <div className="initial-art" aria-hidden="true">
+            r<span>m</span>
+            <i>.</i>
+          </div>
+          <div>
+            <p className="eyebrow">04 / The person behind the work</p>
+            <h2>
+              A designer’s eye.
+              <br />A builder’s <em>mindset.</em>
+            </h2>
+            <p>
+              I’m Raphael Paul Martinez, a developer and systems builder based
+              in the Philippines, with roots in Tawi-Tawi. My work spans
+              websites, education and healthcare tools, real estate research,
+              and automation.
+            </p>
+            <p>
+              I like taking a complicated process and making it easier to use.
+              That is the thread running through everything I build.
+            </p>
+            <Link href="/about" className="text-link">
+              A little more about me ↗
+            </Link>
+          </div>
+        </div>
+      </section>
+      <section className="section faq-section">
+        <div className="wide faq-grid">
+          <div>
+            <p className="eyebrow">05 / Before we begin</p>
+            <h2>
+              A few things
+              <br />
+              you might <em>ask.</em>
+            </h2>
+          </div>
+          <FAQ items={faqs} />
+        </div>
+      </section>
+      <ContactCTA />
+    </div>
   );
 }

@@ -13,9 +13,9 @@ export const PROJECTS: Project[] = [
   {
     slug: "marea",
     name: "MAREA",
-    tag: "Luxury Real Estate / Concept",
+    tag: "Hospitality / Design concept",
     description:
-      "A private coastal resort concept built as a scroll-driven cinematic experience — a 700+ frame sequence mapped directly to scroll position, so the camera glides across the property at whatever pace the visitor sets themselves.",
+      "A coastal resort concept exploring cinematic imagery, editorial typography and a visitor-controlled scroll journey.",
     url: "https://marea-kohl.vercel.app",
     accent: "from-amber-500/20 via-neutral-900 to-neutral-950",
     featured: true,
@@ -35,7 +35,7 @@ export const PROJECTS: Project[] = [
     name: "Opervia",
     tag: "B2B SaaS / GHL Development",
     description:
-      "A technical-partner site for a dev shop that builds and maintains white-label client portals and fulfillment systems for other agencies, built deep on the GoHighLevel (GHL) API.",
+      "An agency website presenting technical implementation, client portals and GoHighLevel services in a structured, business-focused layout.",
     url: "https://opervia-three.vercel.app",
     accent: "from-blue-500/15 via-neutral-900 to-neutral-950",
     featured: true,
@@ -45,7 +45,7 @@ export const PROJECTS: Project[] = [
     name: "Verified Homeowner",
     tag: "SaaS / Real Estate Lead Platform",
     description:
-      "A subscription lead platform selling ownership-matched, phone-verified homeowner contacts to real estate wholesalers, with tiered pricing and a working self-serve signup flow.",
+      "A real estate lead-platform project presenting subscription options and a focused path from service information to enquiry.",
     url: "https://www.verifiedhomeowner.com",
     accent: "from-orange-500/15 via-neutral-900 to-neutral-950",
   },
@@ -73,7 +73,7 @@ export const PROJECTS: Project[] = [
     name: "MyBloodDonorPH",
     tag: "Directory / Community Tool",
     description:
-      "A donor-matching directory connecting people who need blood with donors across the Philippines, filterable by blood type and city, with a working search backend end to end.",
+      "A Philippine blood-donor directory project organized around blood type and location, with a clear search-focused interface.",
     url: "https://myblooddonorph.vercel.app",
     accent: "from-red-600/15 via-neutral-900 to-neutral-950",
   },
@@ -91,9 +91,8 @@ export const PROJECTS: Project[] = [
     name: "REI Data Tools",
     tag: "Internal Tooling / Dashboard",
     description:
-      "A multi-module lead-sourcing dashboard for real estate investors — property data extraction, code-violation search, and skip tracing, built as working internal tooling rather than a marketing page.",
+      "A real estate data-tool interface for organizing property research and extraction tasks into a more structured workflow.",
     url: "https://reidatatools.vercel.app/data-extractor",
     accent: "from-cyan-500/10 via-neutral-900 to-neutral-950",
   },
 ];
-
