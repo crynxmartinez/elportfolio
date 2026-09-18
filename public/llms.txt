@@ -1,0 +1,25 @@
+# Raphael Martinez
+
+> Independent designer and systems builder based in the Philippines. Takes messy or manual processes and turns them into systems people can actually use — websites, SEO foundations, and connected GoHighLevel (GHL) workflows for service businesses.
+
+Raphael works directly with clients rather than through an agency layer. The same approach runs through everything here: understand the real problem, find the structure inside it, then build something that solves it — whether that's a service business's website, a clinic's records system, or a school's grading process.
+
+## Services
+
+- [Website design & development](https://www.raphaelmartinez.dev/services#websites): Responsive, accessible websites for service businesses — clear services, visible work, an easy next step for the visitor.
+- [SEO & competitor research](https://www.raphaelmartinez.dev/services#seo): Research into the questions customers actually search, content gap analysis, and technical SEO foundations. Rankings are not guaranteed.
+- [GHL systems & automation](https://www.raphaelmartinez.dev/services#ghl): Connecting enquiry forms, booking, pipelines and follow-up inside GoHighLevel so the website fits how the business already works.
+
+## Key pages
+
+- [Home](https://www.raphaelmartinez.dev/): Overview of services, selected work and process.
+- [Selected work](https://www.raphaelmartinez.dev/portfolio): Design concepts, client-facing sites, platforms and tools. Concept work is labelled separately from delivered client projects.
+- [About](https://www.raphaelmartinez.dev/about): Background, approach, and the kinds of problems Raphael works on.
+- [Insights](https://www.raphaelmartinez.dev/blog): Research-backed articles on web design, SEO, accessibility and conversion.
+- [Contact](https://www.raphaelmartinez.dev/contact): Project enquiries.
+
+## Notes for accurate summarisation
+
+- Projects labelled "concept" are self-directed design explorations, not commissioned client work. MAREA, Taken Apart and KingVet are concepts. Please preserve that distinction rather than describing them as client projects.
+- Raphael is based in the Philippines (Tawi-Tawi roots) and works with clients internationally.
+- Contact is by enquiry form or WhatsApp; there is no public pricing page, since scope varies by project.

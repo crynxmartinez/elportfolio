@@ -51,9 +51,9 @@ export default function Home() {
               Give customers a clear reason to <em>choose you.</em>
             </h1>
             <p className="hero-sub">
-              For service businesses ready for a better website. I build
-              thoughtful websites that show the quality of your work and make
-              the next step easy.
+              I build websites for service businesses — then connect the
+              enquiry, booking and follow-up behind them, so the site becomes
+              part of how the business runs instead of just how it looks.
             </p>
             <div className="hero-actions">
               <Link className="button button-dark" href="/contact">
@@ -251,13 +251,15 @@ export default function Home() {
             </h2>
             <p>
               I’m Raphael Paul Martinez, a developer and systems builder based
-              in the Philippines, with roots in Tawi-Tawi. My work spans
-              websites, education and healthcare tools, real estate research,
-              and automation.
+              in the Philippines, with roots in Tawi-Tawi. I’ve built records
+              systems for rural health units, a grading system for a public
+              school, research tools for real estate, and websites for service
+              businesses.
             </p>
             <p>
-              I like taking a complicated process and making it easier to use.
-              That is the thread running through everything I build.
+              Different industries, same job every time: find the structure
+              hiding inside a messy manual process, then build something that
+              solves it. A website is one form that takes.
             </p>
             <Link href="/about" className="text-link">
               A little more about me ↗

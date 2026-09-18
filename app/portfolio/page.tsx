@@ -1,4 +1,4 @@
-import { PROJECTS } from "@/lib/data";
+import { PROJECTS, PROJECT_GROUPS } from "@/lib/data";
 import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
 import ProjectCard from "@/components/ProjectCard";
@@ -19,15 +19,33 @@ export default function Portfolio() {
           Ideas made <em>tangible.</em>
         </h1>
         <p className="editorial-intro">
-          Websites to explore. Systems to use. A selection of my design
-          concepts, tools and platform projects, with a closer look at the
-          thinking behind each.
+          Websites to explore. Systems to use. Grouped by the kind of work
+          rather than listed end to end, so it is clear which projects are
+          client-facing builds, which are platforms, and which are concepts.
         </p>
-        <div className="project-grid">
-          {PROJECTS.map((p, i) => (
-            <ProjectCard key={p.slug} project={p} index={i} />
-          ))}
-        </div>
+        {PROJECT_GROUPS.map((group) => {
+          const projects = group.slugs
+            .map((slug) => PROJECTS.find((p) => p.slug === slug))
+            .filter((p): p is (typeof PROJECTS)[number] => Boolean(p));
+          if (!projects.length) return null;
+          return (
+            <section key={group.id} id={group.id} className="mt-20 first:mt-14">
+              <div className="section-heading">
+                <div>
+                  <h2>{group.title}</h2>
+                  <p className="mt-3 max-w-xl text-neutral-400">
+                    {group.blurb}
+                  </p>
+                </div>
+              </div>
+              <div className="project-grid">
+                {projects.map((p, i) => (
+                  <ProjectCard key={p.slug} project={p} index={i} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
         <div className="mt-24">
           <h2>About the work.</h2>
           <FAQ

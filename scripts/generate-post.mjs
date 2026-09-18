@@ -50,12 +50,18 @@ function readExistingPosts() {
   });
 }
 
+// Trims to whole words. A plain .slice(60) cut mid-word and produced slugs
+// like "...how-businesses-actually" and "...get-traffic-and", which read as
+// broken to both people and search engines.
 function slugify(title) {
-  return title
+  const full = title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60);
+    .replace(/^-+|-+$/g, "");
+  if (full.length <= 60) return full;
+  const cut = full.slice(0, 60);
+  const lastBoundary = cut.lastIndexOf("-");
+  return (lastBoundary > 20 ? cut.slice(0, lastBoundary) : cut).replace(/-+$/, "");
 }
 
 function uniqueSlug(base, existingSlugs) {

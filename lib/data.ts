@@ -96,3 +96,46 @@ export const PROJECTS: Project[] = [
     accent: "from-cyan-500/10 via-neutral-900 to-neutral-950",
   },
 ];
+
+/* Presented in groups rather than one flat list. Ungrouped, the work reads as
+   nine unrelated things (a resort, a camera page, a card game, a blood-donor
+   directory) and a prospective client cannot tell what they would be hiring.
+   Order is deliberate: the categories a client hires for come first, concepts
+   and personal work after. */
+export type ProjectGroup = {
+  id: string;
+  title: string;
+  blurb: string;
+  slugs: string[];
+};
+
+export const PROJECT_GROUPS: ProjectGroup[] = [
+  {
+    id: "business-websites",
+    title: "Business websites & GHL systems",
+    blurb:
+      "Client-facing sites built to explain a service clearly, with the enquiry and follow-up connected behind them.",
+    slugs: ["opervia"],
+  },
+  {
+    id: "platforms",
+    title: "Platforms & internal tools",
+    blurb:
+      "Longer-running builds where the real work is the system underneath — records, workflows, search and reporting.",
+    slugs: ["tasheel", "verifiedhomeowner", "myblooddonorph", "rei-data-tools"],
+  },
+  {
+    id: "concepts",
+    title: "Design concepts",
+    blurb:
+      "Self-directed explorations of layout, motion and atmosphere. These are not commissioned client projects, and are labelled that way throughout.",
+    slugs: ["marea", "funnel-3d", "kingvet"],
+  },
+  {
+    id: "games",
+    title: "Games",
+    blurb:
+      "Rules, balance and progression are systems too. Codex Legends has been in development since 2018 and is playable in the browser.",
+    slugs: ["codex-legends"],
+  },
+];
