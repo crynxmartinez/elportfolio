@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
 import { getAllPosts } from "@/lib/posts";
 import { PROJECTS } from "@/lib/data";
+import { SERVICES } from "@/lib/services";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
@@ -11,11 +12,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about",
     "/blog",
     "/contact",
+    "/testimonials",
     "/privacy",
   ];
   const postRoutes = getAllPosts().map((p) => `/blog/${p.slug}`);
   const routes = [
     ...staticRoutes,
+    ...SERVICES.map((s) => `/services/${s.slug}`),
     ...PROJECTS.map((p) => `/portfolio/${p.slug}`),
     ...postRoutes,
   ];

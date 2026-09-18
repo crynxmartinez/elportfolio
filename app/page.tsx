@@ -163,21 +163,21 @@ export default function Home() {
                 "Make your work clear.",
                 "Website design & development",
                 "Unclear services. Buried projects. A difficult mobile experience. Let’s turn those obstacles into a website people can comfortably explore.",
-                "/services#websites",
+                "/services/website-design",
               ],
               [
                 "02",
                 "Help people find answers.",
                 "SEO & competitor research",
                 "Use research to understand the questions customers ask, find content gaps, and decide which pages deserve attention first.",
-                "/services#seo",
+                "/services/seo-competitor-research",
               ],
               [
                 "03",
                 "Keep the conversation going.",
                 "GHL systems & automation",
                 "Connect enquiries, booking and follow-up so the website fits the way you work. Every workflow starts with a clear process.",
-                "/services#ghl",
+                "/services/gohighlevel-development",
               ],
             ].map(([n, h, label, body, url]) => (
               <article className="service-item" key={n}>

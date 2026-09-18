@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllSlugs, getPost } from "@/lib/posts";
 import { pageMetadata, SITE_NAME, SITE_URL, OG_IMAGE } from "@/lib/seo";
+import { SERVICES } from "@/lib/services";
 import FAQ, { faqJsonLd } from "@/components/FAQ";
 
 type Params = { slug: string };
@@ -109,6 +110,27 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
           <FAQ items={post.faqs} title="" />
         </>
       )}
+
+      <section className="mt-16 border-t border-white/10 pt-10">
+        <h2 className="font-display text-xl text-neutral-50">
+          The work behind these ideas
+        </h2>
+        <p className="mt-3 text-sm text-neutral-400">
+          If this article is describing a problem you actually have, these are
+          the services it relates to.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-6">
+          {SERVICES.map((s) => (
+            <Link
+              key={s.slug}
+              href={`/services/${s.slug}`}
+              className="font-mono text-xs uppercase tracking-wide text-teal-200 underline-offset-4 hover:underline"
+            >
+              {s.nav} ↗
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <div className="mt-16 rounded-2xl border border-white/10 bg-neutral-900/50 p-8 text-center">
         <p className="text-neutral-300">

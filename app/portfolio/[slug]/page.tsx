@@ -75,6 +75,99 @@ export default async function Study({
             ))}
           </div>
         )}
+
+        {study?.constraints && (
+          <section className="mt-16">
+            <p className="eyebrow">Constraints</p>
+            <h2>What made it harder.</h2>
+            <ul className="mt-6 grid gap-3 text-neutral-400">
+              {study.constraints.map((c) => (
+                <li key={c} className="flex gap-3">
+                  <span aria-hidden="true" className="text-teal-300/70">
+                    —
+                  </span>
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {study?.decisions && (
+          <section className="mt-16">
+            <p className="eyebrow">Decisions</p>
+            <h2>Choices worth explaining.</h2>
+            <div className="mt-6 grid gap-8 sm:grid-cols-2">
+              {study.decisions.map((d) => (
+                <article key={d.h}>
+                  <h3 className="font-display text-xl">{d.h}</h3>
+                  <p className="mt-2 text-neutral-400">{d.p}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {(study?.stack || study?.performance) && (
+          <section className="mt-16 rounded-2xl border border-white/10 bg-white/[0.02] p-8">
+            <p className="eyebrow">Build &amp; performance</p>
+            {study.stack && (
+              <p className="mt-3 text-neutral-300">{study.stack.join(" · ")}</p>
+            )}
+            {study.performance && (
+              <p className="mt-3 text-sm text-neutral-400">
+                {study.performance}
+              </p>
+            )}
+          </section>
+        )}
+
+        {(study?.role || study?.duration) && (
+          <section className="mt-16">
+            <p className="eyebrow">Scope</p>
+            <div className="mt-4 grid gap-4 text-neutral-400 sm:grid-cols-2">
+              {study.role && (
+                <p>
+                  <span className="text-neutral-200">Role:</span> {study.role}
+                </p>
+              )}
+              {study.duration && (
+                <p>
+                  <span className="text-neutral-200">Duration:</span>{" "}
+                  {study.duration}
+                </p>
+              )}
+            </div>
+          </section>
+        )}
+
+        {(study?.whatWorked || study?.whatIdChange || study?.results) && (
+          <section className="mt-16">
+            <p className="eyebrow">Looking back</p>
+            <div className="mt-6 grid gap-8">
+              {study.whatWorked && (
+                <div>
+                  <h3 className="font-display text-xl">What worked</h3>
+                  <p className="mt-2 text-neutral-400">{study.whatWorked}</p>
+                </div>
+              )}
+              {study.whatIdChange && (
+                <div>
+                  <h3 className="font-display text-xl">
+                    What I would change
+                  </h3>
+                  <p className="mt-2 text-neutral-400">{study.whatIdChange}</p>
+                </div>
+              )}
+              {study.results && (
+                <div>
+                  <h3 className="font-display text-xl">Results</h3>
+                  <p className="mt-2 text-neutral-400">{study.results}</p>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
         <p className="text-sm text-neutral-400 my-8">
           {p.tag.toLowerCase().includes("concept")
             ? "Independent design concept, not a commissioned client case study."

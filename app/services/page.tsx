@@ -1,12 +1,15 @@
 import Link from "next/link";
 import ContactCTA from "@/components/ContactCTA";
+import { SERVICES } from "@/lib/services";
 import { pageMetadata } from "@/lib/seo";
+
 export const metadata = pageMetadata({
   title: "Website Design, SEO & GHL Services — Raphael Martinez",
   description:
-    "Website development, competitor-informed SEO and GHL implementation. A clear scope built around your business process.",
+    "Three ways to work together: website design and development, SEO and competitor research, and GoHighLevel systems. Each scoped around the problem you actually have.",
   path: "/services",
 });
+
 export default function Services() {
   return (
     <>
@@ -19,73 +22,30 @@ export default function Services() {
         </h1>
         <p className="editorial-intro">
           Start with the problem you need solved. We can improve the website,
-          the content, the follow-up process—or bring them together in one
+          the content, the follow-up process — or bring them together in one
           agreed project.
         </p>
-        <div className="mt-16">
-          {[
-            {
-              id: "websites",
-              title: "Website design & development",
-              intro:
-                "A professional website that makes your services clear and your work easy to explore. Motion and 3D are used where they help, with performance and accessibility considered from the start.",
-              items: [
-                "Page structure and visual design",
-                "Responsive development and project galleries",
-                "Forms and agreed integrations",
-                "Technical SEO foundations and handover",
-              ],
-            },
-            {
-              id: "seo",
-              title: "SEO & competitor research",
-              intro:
-                "I use research, including my AIRS tool, to compare pages and identify content gaps worth investigating. Findings guide priorities; they are not proof that a competitor can be outranked or that an AI system will recommend your business.",
-              items: [
-                "Website and competitor content review",
-                "Customer questions and service-page opportunities",
-                "Prioritized recommendations and implementation scope",
-                "Content and ongoing review by agreement",
-              ],
-            },
-            {
-              id: "ghl",
-              title: "GHL systems & automation",
-              intro:
-                "Make the process clear before adding automation. I help connect your website with booking, pipelines and follow-up inside GoHighLevel, including custom development where the workflow needs it.",
-              items: [
-                "Enquiry forms and booking connections",
-                "Pipeline structure and contact organization",
-                "Agreed follow-up workflows",
-                "Workflow testing, documentation and handover",
-              ],
-            },
-          ].map((s) => (
-            <section
-              className="service-detail case-content"
-              id={s.id}
-              key={s.id}
+
+        <div className="mt-16 grid gap-6">
+          {SERVICES.map((s, i) => (
+            <Link
+              key={s.slug}
+              href={`/services/${s.slug}`}
+              className="group block rounded-2xl border border-white/10 bg-white/[0.02] p-8 transition-colors hover:border-teal-300/30"
             >
-              <div>
-                <p className="eyebrow">{s.id}</p>
-                <h2>{s.title}</h2>
-                <p>{s.intro}</p>
-              </div>
-              <div>
-                <p className="eyebrow">Possible project scope</p>
-                <ul>
-                  {s.items.map((i) => (
-                    <li key={i}>{i}</li>
-                  ))}
-                </ul>
-                <Link href="/contact" className="text-link inline-block mt-8">
-                  Talk through your requirements ↗
-                </Link>
-              </div>
-            </section>
+              <span className="font-mono text-xs uppercase tracking-[0.3em] text-teal-300/80">
+                0{i + 1} /
+              </span>
+              <h2 className="font-display mt-3 text-2xl">{s.title}</h2>
+              <p className="mt-3 max-w-2xl text-neutral-400">{s.intro}</p>
+              <span className="text-link mt-6 inline-block">
+                Explore the service ↗
+              </span>
+            </Link>
           ))}
         </div>
-        <p className="text-sm text-neutral-400">
+
+        <p className="mt-16 text-sm text-neutral-400">
           Deliverables, timelines, costs, account ownership and ongoing support
           are agreed before work starts. Software subscriptions and content
           production depend on the scope.
