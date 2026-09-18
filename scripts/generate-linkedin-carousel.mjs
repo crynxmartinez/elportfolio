@@ -57,10 +57,14 @@ Scenario seed (a COMPOSITE, illustrative situation based on a common real patter
 
 Already used, pick a different angle than these: ${usedScenarioKeys.length ? usedScenarioKeys.join(" / ") : "(none yet)"}
 
+The single biggest risk with this kind of post is that it reads as generic "how-to" content - the kind where a competitor could swap in their own name and nothing would feel different. LinkedIn's algorithm and audience both now punish that; what performs is content that feels like it could only have come from actually doing this work. So even though the business itself is a composite, not a real named client, the DETAILS in the story must be specific and concrete, not generic:
+- Invent ONE small, plausible, oddly specific detail that makes the situation feel real (a specific tool or plugin that was misconfigured, a specific page that was the problem, a specific number of months something had been broken, a specific thing the business owner said or assumed). Generic ("the site was slow") is the failure mode; specific ("the homepage was loading three separate font files nobody was using") is the target.
+- Avoid the safe, interchangeable phrasing a dozen other agencies would also use ("we take a holistic approach," "quality service," "attention to detail"). If a sentence could appear on any web design agency's LinkedIn unchanged, rewrite it.
+
 Task:
 1. Use the web_search tool to find at least one real, current statistic or fact that supports why this problem matters (mobile traffic share, page speed / bounce rate, local search behavior, Google Business Profile impact, or whatever is genuinely relevant). Ground the informative content in what you actually find - never invent a statistic.
 2. Structure this as a professional case-study story in exactly 6 body pages plus a title and a closing page (8 total), telling the story while teaching the reader something real about web design/SEO. Each body page should be short enough to read in a few seconds - this is a swiped carousel, not a report.
-3. Stay honest about the framing: describe this as a kind of situation Raphael sees ("a dentist I worked with," "a small agency that came to me"), generic and composite, not naming a specific business, person, or fabricated exact result number for this one story. Realistic, general outcome language only (e.g. "started ranking again for their own city," not an invented specific percentage).
+3. Stay honest about the framing: describe this as a kind of situation Raphael sees ("a dentist I worked with," "a small agency that came to me"), generic and composite, not naming a specific business, person, or fabricated exact result number for this one story. Realistic, general outcome language only (e.g. "started ranking again for their own city," not an invented specific percentage) - specific on the texture of the story, general on the unverifiable outcome numbers.
 4. No hashtags. No hard sell. The closing page should be a genuine, low-pressure note, not a pitch.
 
 Output ONLY a single JSON object between the literal markers <<<JSON>>> and <<<END>>>, matching this exact shape, nothing else outside those markers:
