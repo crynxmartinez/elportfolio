@@ -4,6 +4,8 @@ import Link from "next/link";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import { pageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -17,6 +19,11 @@ const fraunces = Fraunces({
   style: ["normal", "italic"],
 });
 
+/* Search Console verification is read from an env var rather than hardcoded,
+   so the token can be set in Vercel without a code change. Verification only
+   needs to survive on the live domain; it is a no-op locally. */
+const GOOGLE_SITE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   ...pageMetadata({
@@ -25,6 +32,9 @@ export const metadata: Metadata = {
       "Professional website design, SEO and connected GHL systems for service businesses. Explore the work of Raphael Martinez.",
     path: "/",
   }),
+  ...(GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 const JSON_LD = {
@@ -81,6 +91,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Link>
           </div>
         </footer>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

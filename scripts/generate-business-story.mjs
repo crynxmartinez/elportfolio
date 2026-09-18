@@ -1,18 +1,24 @@
-// Auto business-story poster for the "El Martinez" Facebook Page. Picks an
-// unused composite client scenario (see lib/scenarios.mjs), has Claude (with
-// the native web_search tool, so the underlying facts are grounded, not
-// invented) write a long-form storytelling post about that kind of problem
-// and how it gets solved, pulls a matching photo from Pexels, uploads it to
-// GHL's media library, and publishes through GHL's Social Planner API.
+// Auto business-story poster for the "El Martinez" Facebook Page.
 //
-// These are composite/illustrative scenarios based on real patterns Raphael
-// sees in web design + SEO work - not a specific named, verifiable client.
-// The prompt requires that framing to stay honest; nothing here should read
-// as a claim about one identifiable real business.
+// Source: the site's own blog. Each run mines ONE argument ("angle") out of one
+// article rather than summarising the whole thing, so a single 3,000-word
+// researched post yields several distinct posts and the claims stay backed by
+// the citations already in that article.
+//
+// Format: short-line vertical, not prose paragraphs.
+//
+// The article link goes in followUpComment rather than the post body, because
+// Facebook suppresses reach on posts carrying external links.
 
 import fs from "node:fs";
 import path from "node:path";
-import { pickScenario, scenarioKey } from "./lib/scenarios.mjs";
+import {
+  listArticles,
+  loadLog,
+  pickArticle,
+  anglesUsedFor,
+  articleForPrompt,
+} from "./lib/blog-angles.mjs";
 import { confirmPost } from "./lib/ghl.mjs";
 
 const ROOT = process.cwd();
@@ -20,48 +26,55 @@ const LOG_FILE = path.join(ROOT, "content", "business-story-log.json");
 const MODEL = "claude-sonnet-5";
 
 const GHL_BASE = "https://services.leadconnectorhq.com";
-// "El Martinez" Facebook Page, already connected in GHL's Social Planner.
 const GHL_ACCOUNT_ID = "66d636558cd0c2fdd69d7d70_xzA6eU8kOYmBuwFdr3CF_313238408535731_page";
-// Admin user on this GHL location - the API requires a userId even for
-// automated posts; this isn't a credential, just an internal reference id.
 const GHL_USER_ID = "xJD4JpMksaufg8BzC2w8";
 
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 const GHL_TOKEN = process.env.GHL_PRIVATE_TOKEN;
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID;
-const PEXELS_KEY = process.env.PEXELS_API_KEY;
 
 if (!API_KEY) { console.error("ANTHROPIC_API_KEY is not set."); process.exit(1); }
 if (!GHL_TOKEN) { console.error("GHL_PRIVATE_TOKEN is not set."); process.exit(1); }
 if (!GHL_LOCATION_ID) { console.error("GHL_LOCATION_ID is not set."); process.exit(1); }
-if (!PEXELS_KEY) { console.error("PEXELS_API_KEY is not set."); process.exit(1); }
-
-function loadLog() {
-  if (!fs.existsSync(LOG_FILE)) return [];
-  return JSON.parse(fs.readFileSync(LOG_FILE, "utf8"));
-}
 
 function saveLog(log) {
   fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
   fs.writeFileSync(LOG_FILE, JSON.stringify(log, null, 2));
 }
 
-function buildPrompt(scenario, usedScenarioKeys) {
-  return `You are writing ONE long-form Facebook post for "El Martinez", a web design + SEO business, in the voice of its owner, Raphael.
+function buildPrompt(article, usedAngles) {
+  return `You are writing ONE Facebook post for "El Martinez", a web design + SEO business, in the voice of its owner, Raphael.
 
-Scenario seed (a COMPOSITE, illustrative situation based on a common real pattern - not one specific named real client): ${scenario.businessType}, dealing with ${scenario.problem}.
+The post draws on a single article from his own site. Here it is.
 
-Already used, pick a different angle than these: ${usedScenarioKeys.length ? usedScenarioKeys.join(" / ") : "(none yet)"}
+TITLE: ${article.title}
 
-The single biggest risk with this kind of post is that it reads as generic content a dozen other agencies could have posted unchanged - that's what gets scrolled past now. Even though the business itself is a composite, not a real named client, the DETAILS must be specific and a little odd, not generic: invent ONE small, plausible, concrete detail that makes the situation feel real (a specific tool that was misconfigured, a specific page that was the problem, how many months something had been broken, something specific the owner said or assumed). "The site was slow" is the failure mode; "the homepage was loading three font files nobody used" is the target. Avoid interchangeable agency phrasing ("holistic approach," "attention to detail," "quality service") - if a sentence could appear on any web design agency's page unchanged, rewrite it.
+ARTICLE:
+${articleForPrompt(article)}
+
+Angles already posted from this article, pick a different one: ${usedAngles.length ? usedAngles.join(" / ") : "(none yet)"}
 
 Task:
-1. Use the web_search tool to find at least one real, current statistic or fact that supports why this problem actually matters (e.g. real data on mobile traffic share, page speed and bounce rate, local search / "near me" behavior, Google Business Profile impact, or similar - whatever is genuinely relevant to this scenario). Ground the informative part of the post in what you actually find. Never invent a statistic.
-2. Write it as a story: open with the business owner's situation and the problem, walk through what was actually going on (using the real fact/data point naturally, not as a dry citation), then how a problem like this typically gets fixed and why that approach works. End with a short, honest takeaway - not a hard sales pitch.
-3. Write in first person as Raphael, describing this as a kind of client situation he sees ("a dentist I worked with," "a real estate agency that came to me," etc.) - generic and honest about being a common/composite type of situation, not naming a specific business, address, or exact quoted testimonial as if it were one verified real client. Do not invent a company name, a person's name, or fabricated exact numbers/results for this specific "client" - keep outcome language realistic and general (e.g. "started showing up in local searches again," not an invented exact percentage tied to this one story).
-4. Length: this can run long - aim for 180-350 words. Real paragraphs, a storytelling voice, no headers, no bullet points, no hashtags, at most one emoji.
-5. No hard call-to-action like "book now" or "click the link" - end on the insight/story, not a pitch. No mention of "GHL" or any internal tool.
-6. Output ONLY the final post text between the literal markers <<<POST>>> and <<<END>>>, nothing else outside those markers.`;
+1. Pick ONE specific argument from the article - not a summary of the whole thing. A good angle is a single claim a reader could disagree with, narrow enough to defend in a short post. Name it in a few words for the log.
+2. Any statistic or factual claim must already appear in the article above. The article's research is your evidence; do not add numbers from memory and do not invent any.
+3. Lead with something Raphael has seen, not with the research. "Here is the pattern I keep running into" first, then the evidence behind it. A post that opens by citing a study reads like a content mill; a post that opens with an observation and then backs it up reads like a person.
+
+FORMAT - this is not prose, it is a vertical post. Match this shape:
+- One thought per line. Hard line breaks, not paragraphs.
+- Open with a short plain line. No "In today's digital landscape", no rhetorical question hook.
+- Use short runs of repeated sentence shapes for rhythm where it fits naturally.
+- Include two clusters of bullet points, each bullet starting with a bullet character, each one line, 3-5 bullets per cluster.
+- Put one or two short reflective lines between the clusters so it is not just two lists stacked.
+- Close plainly and honestly. No call to action, no hashtags, no emoji.
+- Never mention the article, the blog, or writing about this elsewhere - the link is posted separately as a comment.
+
+Length: 150-300 words total.
+
+Output ONLY this JSON between the literal markers <<<JSON>>> and <<<END>>>, nothing outside them:
+{
+  "angle": "a few words naming the specific argument used",
+  "post": "the full post text, with real line breaks"
+}`;
 }
 
 async function callClaude(messages) {
@@ -72,57 +85,48 @@ async function callClaude(messages) {
       "x-api-key": API_KEY,
       "anthropic-version": "2023-06-01",
     },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 4000,
-      messages,
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 6 }],
-    }),
+    body: JSON.stringify({ model: MODEL, max_tokens: 4000, messages }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(`Anthropic API error ${res.status}: ${JSON.stringify(data.error || data)}`);
-  const usedSearch = (data.content || []).some((b) => b.type === "server_tool_use");
-  return { text: extractText(data.content || []), usedSearch };
-}
-
-function extractText(contentBlocks) {
   let out = "";
-  for (const block of contentBlocks) {
-    if (block.type === "text") out += block.text;
-  }
+  for (const block of data.content || []) if (block.type === "text") out += block.text;
   return out.trim();
 }
 
-function extractPost(text) {
-  const match = text.match(/<<<POST>>>([\s\S]*?)<<<END>>>/);
-  return match ? match[1].trim() : null;
+function extractJson(text) {
+  const match = text.match(/<<<JSON>>>([\s\S]*?)<<<END>>>/);
+  if (!match) return null;
+  try { return JSON.parse(match[1].trim()); } catch { return null; }
 }
 
-function validate(text) {
+/* The previous validator counted words and penalised formatting, which the
+   vertical format depends on. This one checks the shape instead. */
+function validate(result) {
   const errors = [];
-  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
-  if (wordCount < 120) errors.push(`too short (${wordCount} words, want 180-350)`);
-  if (wordCount > 450) errors.push(`too long (${wordCount} words, want 180-350)`);
-  const banned = /\b(click here|book now|link in bio|sign up today|limited time|shop now|visit our website|call now|dm us)\b/i;
-  if (banned.test(text)) errors.push("contains hard-sell marketing language, not allowed");
-  const hashtags = (text.match(/#\w+/g) || []).length;
-  if (hashtags > 0) errors.push("contains hashtags, not allowed");
-  return errors;
-}
+  if (!result) return ["no valid JSON between markers"];
+  if (!result.angle) errors.push("missing angle");
+  const post = result.post || "";
+  if (!post) return ["missing post text"];
 
-async function fetchPexelsImage(query) {
-  const res = await fetch(
-    `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=5&orientation=landscape`,
-    { headers: { Authorization: PEXELS_KEY } }
-  );
-  if (!res.ok) throw new Error(`Pexels API error ${res.status}: ${await res.text()}`);
-  const data = await res.json();
-  const photos = data.photos || [];
-  if (!photos.length) throw new Error(`No Pexels results for query "${query}"`);
-  const photo = photos[Math.floor(Math.random() * photos.length)];
-  const imgRes = await fetch(photo.src.large2x || photo.src.large);
-  if (!imgRes.ok) throw new Error(`Failed to download Pexels image: ${imgRes.status}`);
-  return Buffer.from(await imgRes.arrayBuffer());
+  const words = post.trim().split(/\s+/).filter(Boolean).length;
+  if (words < 100) errors.push(`too short (${words} words, want 150-300)`);
+  if (words > 400) errors.push(`too long (${words} words, want 150-300)`);
+
+  const lines = post.split("\n").filter((l) => l.trim());
+  if (lines.length < 12) errors.push(`only ${lines.length} lines - this must be a vertical post, not paragraphs`);
+
+  const bullets = lines.filter((l) => /^\s*[•\-*]/.test(l));
+  if (bullets.length < 6) errors.push(`only ${bullets.length} bullet lines - want two clusters of 3-5`);
+
+  const longLines = lines.filter((l) => !/^\s*[•\-*]/.test(l) && l.length > 150);
+  if (longLines.length) errors.push(`${longLines.length} line(s) are paragraph-length; keep one thought per line`);
+
+  if (/#\w+/.test(post)) errors.push("contains hashtags, not allowed");
+  if (/\b(dm me|click here|link in bio|sign up today|limited time)\b/i.test(post)) errors.push("contains hard-sell language");
+  if (/\b(I wrote|my article|my blog|read more at)\b/i.test(post)) errors.push("references the article; the link goes in the comment instead");
+
+  return errors;
 }
 
 const EXPIRY_WARNING_DAYS = 7;
@@ -133,75 +137,76 @@ async function checkConnectionHealth() {
   });
   const data = await res.json();
   if (!res.ok) throw new Error(`Could not check GHL connection status: ${JSON.stringify(data)}`);
-
   const account = (data.results?.accounts || []).find((a) => a.id === GHL_ACCOUNT_ID);
   if (!account) {
-    throw new Error(
-      "The El Martinez Facebook page is no longer connected in GHL's Social Planner at all. Reconnect: GHL dashboard -> Settings -> Social Planner -> Connect Account -> Facebook -> \"El Martinez\" page."
-    );
+    throw new Error("The El Martinez Facebook page is no longer connected in GHL's Social Planner. Reconnect: GHL dashboard -> Settings -> Social Planner.");
   }
   if (account.isExpired) {
-    throw new Error(
-      `The El Martinez Facebook <-> GHL connection EXPIRED on ${account.expire}. No post was attempted. Reconnect: GHL dashboard -> Settings -> Social Planner -> reconnect the Facebook page.`
-    );
+    throw new Error(`The El Martinez Facebook <-> GHL connection EXPIRED on ${account.expire}. No post was attempted.`);
   }
   const daysLeft = Math.floor((new Date(account.expire).getTime() - Date.now()) / 86400000);
   if (daysLeft <= EXPIRY_WARNING_DAYS) {
-    console.log(`::warning::El Martinez Facebook <-> GHL connection expires in ${daysLeft} day(s) (${account.expire}). Reconnect soon in GHL.`);
+    console.log(`::warning::Facebook <-> GHL connection expires in ${daysLeft} day(s) (${account.expire}).`);
   } else {
     console.log(`Connection healthy - expires ${account.expire} (${daysLeft} days left).`);
   }
 }
 
+async function uploadCover(article) {
+  if (!article.coverImage) return [];
+  const imgRes = await fetch(article.coverImage);
+  if (!imgRes.ok) {
+    console.log(`Could not fetch cover image (${imgRes.status}); posting without image.`);
+    return [];
+  }
+  const buf = Buffer.from(await imgRes.arrayBuffer());
+  const form = new FormData();
+  form.append("file", new Blob([buf], { type: "image/jpeg" }), "cover.jpg");
+  const up = await fetch(`${GHL_BASE}/medias/upload-file`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${GHL_TOKEN}`, Version: "v3" },
+    body: form,
+  });
+  const upData = await up.json();
+  if (up.ok && upData.url) return [{ url: upData.url, type: "image/jpeg" }];
+  console.log("Cover image upload failed, posting without image:", JSON.stringify(upData));
+  return [];
+}
+
 async function main() {
   await checkConnectionHealth();
 
-  const log = loadLog();
-  const scenario = pickScenario(log);
-  const usedScenarioKeys = log.map((e) => `${e.businessType} / ${e.problem}`);
+  const log = loadLog("business-story-log.json");
+  const otherLog = loadLog("linkedin-carousel-log.json");
+  const articles = listArticles();
+  if (!articles.length) throw new Error("No blog articles found in content/blog.");
 
-  console.log(`Picked scenario: ${scenario.businessType} - ${scenario.problem}`);
+  const article = pickArticle(articles, log, otherLog);
+  const usedAngles = anglesUsedFor(article.slug, log, otherLog);
+  console.log(`Picked article: ${article.slug} (${usedAngles.length} angle(s) already used)`);
 
-  let messages = [{ role: "user", content: buildPrompt(scenario, usedScenarioKeys) }];
-  let { text, usedSearch } = await callClaude(messages);
-  let post = extractPost(text);
-  if (!post) throw new Error("No <<<POST>>> markers in the model's response.");
-
-  let errors = validate(post);
-  if (!usedSearch) errors.push("model did not use web_search - can't confirm this is grounded in real research");
+  let messages = [{ role: "user", content: buildPrompt(article, usedAngles) }];
+  let text = await callClaude(messages);
+  let result = extractJson(text);
+  let errors = validate(result);
 
   if (errors.length) {
     console.log("Validation failed, requesting one correction pass:", errors.join("; "));
     messages.push({ role: "assistant", content: text });
     messages.push({
       role: "user",
-      content: `That attempt had problems: ${errors.join("; ")}. Fix them. Output the corrected post again between <<<POST>>> and <<<END>>>, nothing else.`,
+      content: `That attempt had problems: ${errors.join("; ")}. Fix them and output the corrected JSON again between <<<JSON>>> and <<<END>>>, nothing else.`,
     });
-    ({ text, usedSearch } = await callClaude(messages));
-    post = extractPost(text);
-    if (!post) throw new Error("Correction pass had no <<<POST>>> markers either.");
-    errors = validate(post);
-    if (!usedSearch) errors.push("model still did not use web_search");
+    text = await callClaude(messages);
+    result = extractJson(text);
+    errors = validate(result);
     if (errors.length) throw new Error(`Validation failed after correction pass: ${errors.join("; ")}`);
   }
 
-  console.log(`Post ready (${post.trim().split(/\s+/).length} words). Fetching image...`);
+  const post = result.post;
+  console.log(`Post ready - angle: "${result.angle}" (${post.split("\n").filter(Boolean).length} lines)`);
 
-  const imageQuery = scenario.businessType.replace(/^an? /, "");
-  const imageBuffer = await fetchPexelsImage(imageQuery);
-
-  console.log("Uploading image to GHL media library...");
-  const uploadForm = new FormData();
-  uploadForm.append("file", new Blob([imageBuffer], { type: "image/jpeg" }), "story.jpg");
-  const uploadRes = await fetch(`${GHL_BASE}/medias/upload-file`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${GHL_TOKEN}`, Version: "v3" },
-    body: uploadForm,
-  });
-  const uploadResult = await uploadRes.json();
-  if (!uploadRes.ok || !uploadResult.url) {
-    throw new Error(`GHL media upload failed: ${JSON.stringify(uploadResult)}`);
-  }
+  const media = await uploadCover(article);
 
   console.log("Publishing through GHL Social Planner...");
   const postRes = await fetch(`${GHL_BASE}/social-media-posting/${GHL_LOCATION_ID}/posts`, {
@@ -210,28 +215,32 @@ async function main() {
     body: JSON.stringify({
       accountIds: [GHL_ACCOUNT_ID],
       summary: post,
-      media: [{ url: uploadResult.url, type: "image/jpeg" }],
+      media,
       status: "published",
       type: "post",
       userId: GHL_USER_ID,
+      followUpComment: `The full article, with the research behind this: ${article.url}`,
     }),
   });
   const postResult = await postRes.json();
   if (!postRes.ok) throw new Error(`GHL post creation failed: ${JSON.stringify(postResult)}`);
 
-  const { ghlPostId, previewLink } = await confirmPost(post, postResult, { token: GHL_TOKEN, locationId: GHL_LOCATION_ID });
+  const { ghlPostId, previewLink } = await confirmPost(post, postResult, {
+    token: GHL_TOKEN,
+    locationId: GHL_LOCATION_ID,
+  });
 
   log.push({
-    key: scenarioKey(scenario),
-    businessType: scenario.businessType,
-    problem: scenario.problem,
+    slug: article.slug,
+    angle: result.angle,
+    articleTitle: article.title,
     date: new Date().toISOString().slice(0, 10),
     ghlPostId,
     previewLink,
   });
   saveLog(log);
 
-  console.log(`SUCCESS: posted the "${scenario.businessType}" story. GHL post id: ${ghlPostId || "(unknown - check logs)"}${previewLink ? `, link: ${previewLink}` : ""}`);
+  console.log(`SUCCESS: posted "${result.angle}" from ${article.slug}. ${previewLink || ""}`);
 }
 
 main().catch((err) => {
