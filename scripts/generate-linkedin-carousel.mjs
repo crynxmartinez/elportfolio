@@ -130,7 +130,7 @@ function validate(doc) {
     if (firstLine.length > 140) errors.push(`first caption line is ${firstLine.length} chars, must hook within 140`);
     if (caption.length < 700) errors.push(`caption is ${caption.length} chars, want 900-1300`);
     if (caption.length > 1600) errors.push(`caption is ${caption.length} chars, want 900-1300`);
-    if (/#\w+/.test(caption)) errors.push("caption contains hashtags, not allowed");
+    if (/(^|\s)#[a-zA-Z]\w*/.test(caption)) errors.push("caption contains hashtags, not allowed");
   }
 
   if (!Array.isArray(doc.pages) || doc.pages.length !== 6) {

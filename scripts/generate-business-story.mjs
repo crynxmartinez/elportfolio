@@ -122,7 +122,9 @@ function validate(result) {
   const longLines = lines.filter((l) => !/^\s*[•\-*]/.test(l) && l.length > 150);
   if (longLines.length) errors.push(`${longLines.length} line(s) are paragraph-length; keep one thought per line`);
 
-  if (/#\w+/.test(post)) errors.push("contains hashtags, not allowed");
+  // A hashtag starts with a letter. Matching /#\w+/ also caught "rank #1",
+  // which appears legitimately in article titles and quotes.
+  if (/(^|\s)#[a-zA-Z]\w*/.test(post)) errors.push("contains hashtags, not allowed");
   if (/\b(dm me|click here|link in bio|sign up today|limited time)\b/i.test(post)) errors.push("contains hard-sell language");
   if (/\b(I wrote|my article|my blog|read more at)\b/i.test(post)) errors.push("references the article; the link goes in the comment instead");
 
