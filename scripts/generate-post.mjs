@@ -8,6 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
 import matter from "gray-matter";
+import { pickMode } from "./lib/post-modes.mjs";
 
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, "content", "blog");
@@ -46,7 +47,7 @@ function readExistingPosts() {
   return files.map((f) => {
     const raw = fs.readFileSync(path.join(POSTS_DIR, f), "utf8");
     const { data } = matter(raw);
-    return { slug: f.replace(/\.md$/, ""), title: data.title, date: data.date };
+    return { slug: f.replace(/\.md$/, ""), title: data.title, date: data.date, mode: data.mode };
   });
 }
 
@@ -165,7 +166,7 @@ function validate(fileContent) {
   return { errors, data, wordCount, linkCount: links.length };
 }
 
-function buildPrompt(existingPosts, referenceMd) {
+function buildPrompt(existingPosts, referenceMd, mode) {
   const existingList = existingPosts.map((p) => `- "${p.title}" (${p.date})`).join("\n") || "(none yet)";
   const today = new Date().toISOString().slice(0, 10);
 
@@ -179,8 +180,16 @@ Reference post for voice, structure, and quality bar (content/blog/${REFERENCE_S
 ${referenceMd}
 """
 
+MODE FOR THIS ARTICLE: ${mode.label}
+${mode.blog}
+
+The mode above decides the SHAPE of the article. Two articles on the same
+subject in different modes should read as genuinely different pieces, not the
+same explainer with a different title. Hold to it throughout - do not quietly
+revert to a general overview.
+
 Task:
-1. Pick ONE topic, rotating across three buckets so the blog stays varied: (a) website design / premium web design, (b) SEO, (c) how businesses combine a website with SEO to actually grow (lead generation, conversion, local search, etc). Pick whichever bucket is least recently covered by the existing posts above.
+1. Pick ONE topic, rotating across three buckets so the blog stays varied: (a) website design / premium web design, (b) SEO, (c) how businesses combine a website with SEO to actually grow (lead generation, conversion, local search, etc). Pick whichever bucket is least recently covered by the existing posts above, then treat it in the mode above.
 2. Research it for REAL using the web_search tool. Every factual claim, statistic, or named study must come from a real source you actually found via search, cited inline as an ACTUAL CLICKABLE MARKDOWN LINK - not just naming the source in prose. Wrong: "Whitespark's report found X." Right: "[Whitespark's report](https://actual-url-you-found) found X." Use the real URL of the page you searched and read - never a placeholder or invented URL. Aim for 5-8 such links spread through the piece, the same density as the reference post. Never invent a statistic, study, or source. If you can't verify something, phrase it as reasoned opinion, not a cited fact.
 3. Write AT LEAST 3000 words (aim for 3200-3500 to be safe - err long, not short) in that same direct, no-hype voice, with clear H2 (##) / H3 (###) section headings. That means covering enough distinct sub-topics: expect 7-9 H2 sections, not 4-5. Write in normal flowing paragraphs - do not break sentences across lines with stray line breaks.
 4. Write exactly 5 FAQs - the most genuinely common real-world questions on this topic - matching the tone/depth of the reference post's FAQs.
@@ -191,6 +200,7 @@ Task:
 title: "..."
 excerpt: "1-2 sentence summary"
 date: "${today}"
+mode: "${mode.id}"
 readTime: "NN min read"
 imageQuery: "..."
 faqs:
@@ -214,7 +224,11 @@ async function main() {
   const existingPosts = readExistingPosts();
   const referenceMd = fs.readFileSync(path.join(POSTS_DIR, `${REFERENCE_SLUG}.md`), "utf8");
 
-  const prompt = buildPrompt(existingPosts, referenceMd);
+  const mode = pickMode(
+    [...existingPosts].sort((a, b) => String(a.date).localeCompare(String(b.date)))
+  );
+  console.log(`Writing in "${mode.label}" mode.`);
+  const prompt = buildPrompt(existingPosts, referenceMd, mode);
   console.log("Requesting post from Claude (with web search)...");
 
   let messages = [{ role: "user", content: prompt }];

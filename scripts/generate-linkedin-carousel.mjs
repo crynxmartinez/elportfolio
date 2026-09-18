@@ -21,6 +21,7 @@ import {
   anglesUsedFor,
   articleForPrompt,
 } from "./lib/blog-angles.mjs";
+import { pickMode } from "./lib/post-modes.mjs";
 import { confirmPost } from "./lib/ghl.mjs";
 import { renderCoverPage, renderBodyPage, renderClosingPage } from "./lib/render-carousel.mjs";
 
@@ -48,7 +49,7 @@ function saveLog(log) {
   fs.writeFileSync(LOG_FILE, JSON.stringify(log, null, 2));
 }
 
-function buildPrompt(article, usedAngles) {
+function buildPrompt(article, usedAngles, mode) {
   return `You are writing an 8-page LinkedIn document carousel in the voice of Raphael Martinez, a web designer and systems builder.
 
 It is built on one argument from an article on his own site. Here is the article.
@@ -60,22 +61,26 @@ ${articleForPrompt(article)}
 
 Angles already used from this article, pick a different one: ${usedAngles.length ? usedAngles.join(" / ") : "(none yet)"}
 
+MODE FOR THIS CAROUSEL: ${mode.label}
+${mode.social}
+
 Task:
 1. Pick ONE specific argument from the article - not a summary of it. Name it in a few words for the log.
-2. Tell it as a case study: a situation, what was actually wrong underneath, and what resolved it. The business in the situation is a COMPOSITE - a realistic pattern, not a named real client - so do not invent a company name, a person, or a specific result figure for it. Give it one concrete, plausible, slightly odd detail so it reads as a real situation rather than a template.
+2. Build the carousel in the mode above. The mode decides the shape of the thinking; the article supplies the substance. The same article in "How I think" mode and in "Education" mode should produce two genuinely different carousels, not the same one relabelled.
 3. Every statistic or factual claim must already appear in the article above. That research is the evidence; never add a number from memory and never invent one.
-4. Lead with the observation, not the research. What Raphael keeps running into first; the supporting data after. Opening with a citation reads like a content mill.
+4. Lead with the observation or the thinking, not the research. Opening with a citation reads like a content mill.
 
 The caption matters as much as the pages:
 - The first line must work as a hook inside 140 characters, because LinkedIn truncates the preview there.
 - The whole caption should land between 900 and 1300 characters. Shorter than about 600 performs measurably worse.
 - No hashtags, no emoji, no call to action. Do not mention the article - it is linked separately in a comment.
 
-Page structure (8 pages total):
-- Cover: the claim, stated plainly, plus one sub-line
-- Pages 1-2: the situation and what was actually going wrong
-- Pages 3-4: the evidence, drawn from the article's research
-- Pages 5-6: what resolves it and why that works
+Page structure (8 pages total). Adapt the middle to the mode rather than
+forcing every carousel into a case-study arc:
+- Cover: the central claim, stated plainly, plus one sub-line
+- Pages 1-2: set up the problem, question or decision this is really about
+- Pages 3-4: the substance - evidence, mechanism, or the trade-off being weighed
+- Pages 5-6: where it lands and why
 - Closing: the takeaway, warm and low-pressure
 
 Output ONLY this JSON between the literal markers <<<JSON>>> and <<<END>>>, nothing outside them:
@@ -210,9 +215,10 @@ async function main() {
 
   const article = pickArticle(articles, log, otherLog);
   const usedAngles = anglesUsedFor(article.slug, log, otherLog);
-  console.log(`Picked article: ${article.slug} (${usedAngles.length} angle(s) already used)`);
+  const mode = pickMode(log);
+  console.log(`Picked article: ${article.slug} (${usedAngles.length} angle(s) used) in "${mode.label}" mode`);
 
-  let messages = [{ role: "user", content: buildPrompt(article, usedAngles) }];
+  let messages = [{ role: "user", content: buildPrompt(article, usedAngles, mode) }];
   let text = await callClaude(messages);
   let content = extractJson(text);
   let errors = validate(content);
@@ -278,6 +284,7 @@ async function main() {
   log.push({
     slug: article.slug,
     angle: content.angle,
+    mode: mode.id,
     articleTitle: article.title,
     title: content.title,
     date: new Date().toISOString().slice(0, 10),

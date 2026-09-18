@@ -19,6 +19,7 @@ import {
   anglesUsedFor,
   articleForPrompt,
 } from "./lib/blog-angles.mjs";
+import { pickMode } from "./lib/post-modes.mjs";
 import { confirmPost } from "./lib/ghl.mjs";
 
 const ROOT = process.cwd();
@@ -42,7 +43,7 @@ function saveLog(log) {
   fs.writeFileSync(LOG_FILE, JSON.stringify(log, null, 2));
 }
 
-function buildPrompt(article, usedAngles) {
+function buildPrompt(article, usedAngles, mode) {
   return `You are writing ONE Facebook post for "El Martinez", a web design + SEO business, in the voice of its owner, Raphael.
 
 The post draws on a single article from his own site. Here it is.
@@ -54,10 +55,14 @@ ${articleForPrompt(article)}
 
 Angles already posted from this article, pick a different one: ${usedAngles.length ? usedAngles.join(" / ") : "(none yet)"}
 
+MODE FOR THIS POST: ${mode.label}
+${mode.social}
+
 Task:
 1. Pick ONE specific argument from the article - not a summary of the whole thing. A good angle is a single claim a reader could disagree with, narrow enough to defend in a short post. Name it in a few words for the log.
 2. Any statistic or factual claim must already appear in the article above. The article's research is your evidence; do not add numbers from memory and do not invent any.
-3. Lead with something Raphael has seen, not with the research. "Here is the pattern I keep running into" first, then the evidence behind it. A post that opens by citing a study reads like a content mill; a post that opens with an observation and then backs it up reads like a person.
+3. Write it in the mode above. The mode decides the shape of the thinking; the article supplies the substance. A post in "How I think" mode built on this article should read completely differently from an "Education" post built on the same one.
+4. Lead with something Raphael has seen or thought, not with the research. A post that opens by citing a study reads like a content mill; one that opens with an observation and then backs it up reads like a person.
 
 FORMAT - this is not prose, it is a vertical post. Match this shape:
 - One thought per line. Hard line breaks, not paragraphs.
@@ -185,9 +190,10 @@ async function main() {
 
   const article = pickArticle(articles, log, otherLog);
   const usedAngles = anglesUsedFor(article.slug, log, otherLog);
-  console.log(`Picked article: ${article.slug} (${usedAngles.length} angle(s) already used)`);
+  const mode = pickMode(log);
+  console.log(`Picked article: ${article.slug} (${usedAngles.length} angle(s) used) in "${mode.label}" mode`);
 
-  let messages = [{ role: "user", content: buildPrompt(article, usedAngles) }];
+  let messages = [{ role: "user", content: buildPrompt(article, usedAngles, mode) }];
   let text = await callClaude(messages);
   let result = extractJson(text);
   let errors = validate(result);
@@ -235,6 +241,7 @@ async function main() {
   log.push({
     slug: article.slug,
     angle: result.angle,
+    mode: mode.id,
     articleTitle: article.title,
     date: new Date().toISOString().slice(0, 10),
     ghlPostId,
@@ -242,7 +249,7 @@ async function main() {
   });
   saveLog(log);
 
-  console.log(`SUCCESS: posted "${result.angle}" from ${article.slug}. ${previewLink || ""}`);
+  console.log(`SUCCESS: posted "${result.angle}" (${mode.label}) from ${article.slug}. ${previewLink || ""}`);
 }
 
 main().catch((err) => {
