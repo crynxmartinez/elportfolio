@@ -170,7 +170,7 @@ export default async function Study({
         )}
         <p className="text-sm text-neutral-400 my-8">
           {p.tag.toLowerCase().includes("prior agency")
-            ? "Delivered for an agency's clients while employed there. Client identities and data are withheld under NDA, and no specific results are claimed here."
+            ? "White-label work delivered behind an agency's brand. Client identities and data are withheld under NDA, and no specific results are claimed here."
             : p.tag.toLowerCase().includes("concept")
               ? "Independent design concept, not a commissioned client case study. Screenshot captured September 2026."
               : "Portfolio project overview. No revenue, ranking or conversion results are claimed. Screenshot captured September 2026."}

@@ -74,10 +74,10 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     stack: ["Next.js", "Deployed on Vercel"],
   },
   /* Deliberately has no `performance` or results field. The outcomes exist and
-     are strong, but they were delivered for an agency's clients under NDA, so
-     they are not published here unless and until the agency gives written
-     permission. Listing the experience is fine; claiming the clients' numbers
-     is not. */
+     are strong, but this was white-label work: the agency held the client
+     relationship, so the numbers are theirs to release. Not published unless
+     and until they give written permission. Listing the experience is fine;
+     claiming the clients' numbers is not. */
   "agency-seo": {
     challenge:
       "Improve organic search visibility for a portfolio of B2B and local service businesses, across different markets and levels of existing search presence.",
@@ -89,7 +89,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
       "Technical SEO and tracking",
     ],
     constraints: [
-      "Client relationships and reporting sat with the agency, so the outcomes belong to them rather than to me",
+      "White-label arrangement - the agency held the client relationship and the reporting, so the outcomes are theirs to publish, not mine",
       "Client identities, keyword sets and link data are covered by NDA and are not published",
       "Markets ranged from established brands to sites with effectively no search presence at the start",
     ],
@@ -103,7 +103,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         p: "The results were good, but they belong to the agency and its clients. Listing this as experience is honest. Putting their figures on my own portfolio without written permission would not be.",
       },
     ],
-    role: "SEO research, content programmes and technical delivery, in-house at the agency",
+    role: "Sole SEO delivery - research, content programmes and technical work, white-labelled behind the agency",
   },
   opervia: {
     challenge:
