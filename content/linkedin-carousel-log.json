@@ -88,5 +88,15 @@
     "date": "2026-09-18",
     "ghlPostId": "6aadb56a14c3da0623046208",
     "previewLink": null
+  },
+  {
+    "slug": "website-accessibility-compliance",
+    "angle": "Why accessibility overlays fail — screen readers read markup, not the visual layer",
+    "mode": "education",
+    "articleTitle": "The Accessibility Problem Nobody Budgets For (Until a Letter Arrives)",
+    "title": "Why Overlay Widgets Don't Actually Work",
+    "date": "2026-09-19",
+    "ghlPostId": "6aae7718d2d58e0f4e2265a4",
+    "previewLink": null
   }
 ]
