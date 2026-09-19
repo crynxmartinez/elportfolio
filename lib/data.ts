@@ -3,7 +3,7 @@ export type Project = {
   name: string;
   tag: string;
   description: string;
-  url: string;
+  url?: string; // absent when there is nothing publicly linkable (e.g. NDA work)
   accent: string; // tailwind gradient classes
   featured?: boolean;
   note?: string; // honesty flag shown only in code comments / not public-facing spin
@@ -87,6 +87,14 @@ export const PROJECTS: Project[] = [
     accent: "from-lime-500/10 via-neutral-900 to-neutral-950",
   },
   {
+    slug: "agency-seo",
+    name: "Search visibility programmes",
+    tag: "SEO / Prior agency work",
+    description:
+      "SEO delivery for B2B and local service businesses while working at an agency — keyword research, content programmes and technical fixes, as part of a delivery team. Client identities are withheld under NDA.",
+    accent: "from-teal-500/15 via-neutral-900 to-neutral-950",
+  },
+  {
     slug: "rei-data-tools",
     name: "REI Data Tools",
     tag: "Internal Tooling / Dashboard",
@@ -116,6 +124,13 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     blurb:
       "Client-facing sites built to explain a service clearly, with the enquiry and follow-up connected behind them.",
     slugs: ["opervia"],
+  },
+  {
+    id: "prior-agency",
+    title: "Prior agency work",
+    blurb:
+      "SEO delivered for clients while employed at an agency, as part of a team. Client names and data are withheld under NDA, so this is listed as experience rather than as a case study with published results.",
+    slugs: ["agency-seo"],
   },
   {
     id: "platforms",

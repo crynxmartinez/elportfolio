@@ -169,19 +169,26 @@ export default async function Study({
           </section>
         )}
         <p className="text-sm text-neutral-400 my-8">
-          {p.tag.toLowerCase().includes("concept")
-            ? "Independent design concept, not a commissioned client case study."
-            : "Portfolio project overview. No revenue, ranking or conversion results are claimed."}{" "}
-          Screenshot captured September 2026.
+          {p.tag.toLowerCase().includes("prior agency")
+            ? "Delivered for an agency's clients as part of a team. Client identities and data are withheld under NDA, and no specific results are claimed here."
+            : p.tag.toLowerCase().includes("concept")
+              ? "Independent design concept, not a commissioned client case study. Screenshot captured September 2026."
+              : "Portfolio project overview. No revenue, ranking or conversion results are claimed. Screenshot captured September 2026."}
         </p>
-        <a
-          className="button button-dark"
-          href={p.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Explore the live preview ↗
-        </a>
+        {p.url ? (
+          <a
+            className="button button-dark"
+            href={p.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Explore the live preview ↗
+          </a>
+        ) : (
+          <Link className="button button-dark" href="/contact">
+            Ask me about this work ↗
+          </Link>
+        )}
         {slug === "marea" && (
           <Link
             href="/blog/premium-website"
