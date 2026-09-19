@@ -91,7 +91,7 @@ export const PROJECTS: Project[] = [
     name: "Search visibility programmes",
     tag: "SEO / Prior agency work",
     description:
-      "SEO delivery for B2B and local service businesses while working at an agency — keyword research, content programmes and technical fixes, as part of a delivery team. Client identities are withheld under NDA.",
+      "SEO delivery for B2B and local service businesses while employed at an agency — keyword research, content programmes and technical fixes, built and run internally by me. Client identities are withheld under NDA.",
     accent: "from-teal-500/15 via-neutral-900 to-neutral-950",
   },
   {
@@ -129,7 +129,7 @@ export const PROJECT_GROUPS: ProjectGroup[] = [
     id: "prior-agency",
     title: "Prior agency work",
     blurb:
-      "SEO delivered for clients while employed at an agency, as part of a team. Client names and data are withheld under NDA, so this is listed as experience rather than as a case study with published results.",
+      "SEO delivered for clients while employed at an agency. Client names and data are withheld under NDA, so this is listed as experience rather than as a case study with published results.",
     slugs: ["agency-seo"],
   },
   {
