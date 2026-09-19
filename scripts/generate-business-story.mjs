@@ -19,7 +19,7 @@ import {
   anglesUsedFor,
   articleForPrompt,
 } from "./lib/blog-angles.mjs";
-import { pickMode } from "./lib/post-modes.mjs";
+import { pickMode, modeContext } from "./lib/post-modes.mjs";
 import { confirmPost } from "./lib/ghl.mjs";
 
 const ROOT = process.cwd();
@@ -57,6 +57,8 @@ Angles already posted from this article, pick a different one: ${usedAngles.leng
 
 MODE FOR THIS POST: ${mode.label}
 ${mode.social}
+
+${modeContext(mode)}
 
 Task:
 1. Pick ONE specific argument from the article - not a summary of the whole thing. A good angle is a single claim a reader could disagree with, narrow enough to defend in a short post. Name it in a few words for the log.

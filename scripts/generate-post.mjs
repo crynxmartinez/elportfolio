@@ -8,7 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
 import matter from "gray-matter";
-import { pickMode } from "./lib/post-modes.mjs";
+import { pickMode, modeContext } from "./lib/post-modes.mjs";
 
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, "content", "blog");
@@ -182,6 +182,8 @@ ${referenceMd}
 
 MODE FOR THIS ARTICLE: ${mode.label}
 ${mode.blog}
+
+${modeContext(mode)}
 
 The mode above decides the SHAPE of the article. Two articles on the same
 subject in different modes should read as genuinely different pieces, not the

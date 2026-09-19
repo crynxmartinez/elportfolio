@@ -11,6 +11,8 @@
 // happen. Anything presented as observed has to be genuinely verifiable or
 // genuinely generic.
 
+import { METHOD, VOICE_GUARDRAILS } from "./voice.mjs";
+
 export const MODES = [
   {
     id: "education",
@@ -90,4 +92,17 @@ export function pickMode(log, key = "mode") {
     }
   }
   return oldest;
+}
+
+/* Reasoning mode gets his real, stated method injected, because invented
+   reasoning is the one thing this mode cannot survive. The guardrails apply
+   to every mode - they record two things he does NOT have, learned by asking
+   rather than guessing. */
+export function modeContext(mode) {
+  const parts = [];
+  if (mode.id === "reasoning") parts.push(METHOD);
+  parts.push(VOICE_GUARDRAILS);
+  return parts.join(`
+
+`);
 }

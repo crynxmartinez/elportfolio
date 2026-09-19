@@ -21,7 +21,7 @@ import {
   anglesUsedFor,
   articleForPrompt,
 } from "./lib/blog-angles.mjs";
-import { pickMode } from "./lib/post-modes.mjs";
+import { pickMode, modeContext } from "./lib/post-modes.mjs";
 import { confirmPost } from "./lib/ghl.mjs";
 import { renderCoverPage, renderBodyPage, renderClosingPage } from "./lib/render-carousel.mjs";
 
@@ -63,6 +63,8 @@ Angles already used from this article, pick a different one: ${usedAngles.length
 
 MODE FOR THIS CAROUSEL: ${mode.label}
 ${mode.social}
+
+${modeContext(mode)}
 
 Task:
 1. Pick ONE specific argument from the article - not a summary of it. Name it in a few words for the log.
