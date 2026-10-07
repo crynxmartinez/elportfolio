@@ -195,5 +195,14 @@
     "date": "2026-10-05",
     "ghlPostId": "6ac35ba5fd4c1d289b22078b",
     "previewLink": null
+  },
+  {
+    "slug": "the-markup-nobody-sees-how-structured-data-actually-changes",
+    "angle": "schema can exist on a site and still fail silently if it's malformed or mismatched",
+    "mode": "case-study",
+    "articleTitle": "The Markup Nobody Sees: How Structured Data Actually Changes What Google Shows About You",
+    "date": "2026-10-07",
+    "ghlPostId": "6ac5fd1cc8802f1a941c6df4",
+    "previewLink": null
   }
 ]
