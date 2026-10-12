@@ -238,5 +238,15 @@
     "date": "2026-10-10",
     "ghlPostId": "6aca3c2c71e999f8a858c629",
     "previewLink": null
+  },
+  {
+    "slug": "the-markup-nobody-sees-how-structured-data-actually-changes",
+    "angle": "why machines need explicit labels for what humans infer automatically",
+    "mode": "education",
+    "articleTitle": "The Markup Nobody Sees: How Structured Data Actually Changes What Google Shows About You",
+    "title": "Google Reads Your Page Blind",
+    "date": "2026-10-12",
+    "ghlPostId": "6acd0c56032a0cfcfd578ea0",
+    "previewLink": null
   }
 ]
