@@ -231,5 +231,14 @@
     "date": "2026-10-11",
     "ghlPostId": "6acb44fd71e999f8a836de2d",
     "previewLink": null
+  },
+  {
+    "slug": "the-fifteen-lines-nobody-reads-what-s-actually-sitting",
+    "angle": "why the lang attribute stays broken for years",
+    "mode": "analysis",
+    "articleTitle": "The Fifteen Lines Nobody Reads: What's Actually Sitting Inside a Website's <head> (And What Each One Silently Decides)",
+    "date": "2026-10-12",
+    "ghlPostId": "6acc9a5f45c29be29a758660",
+    "previewLink": null
   }
 ]
