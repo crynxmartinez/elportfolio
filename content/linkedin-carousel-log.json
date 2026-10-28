@@ -328,5 +328,15 @@
     "date": "2026-10-26",
     "ghlPostId": "6adf5d0c47413f8708e77f94",
     "previewLink": null
+  },
+  {
+    "slug": "the-jump-you-can-t-screenshot-a-case-study-in-the-layout",
+    "angle": "choosing fallback-font metric matching over the font-display timing fix",
+    "mode": "reasoning",
+    "articleTitle": "The Jump You Can't Screenshot: A Case Study in the Layout Shift Undermining a Premium Website",
+    "title": "The Fix I Didn't Take",
+    "date": "2026-10-28",
+    "ghlPostId": "6ae1fe6a8128169a16c1980c",
+    "previewLink": null
   }
 ]
