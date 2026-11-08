@@ -408,5 +408,15 @@
     "date": "2026-11-07",
     "ghlPostId": "6aef2c22a16da913ed58f58d",
     "previewLink": null
+  },
+  {
+    "slug": "the-forty-item-audit-how-i-actually-decide-what-gets-fixed",
+    "angle": "severity-by-color isn't impact-by-reality in audit triage",
+    "mode": "analysis",
+    "articleTitle": "The Forty-Item Audit: How I Actually Decide What Gets Fixed First (And What I Tell a Client to Ignore)",
+    "title": "Severity Labels Aren't Severity",
+    "date": "2026-11-08",
+    "ghlPostId": "6af0829a6b311a7f8a7ae360",
+    "previewLink": null
   }
 ]
